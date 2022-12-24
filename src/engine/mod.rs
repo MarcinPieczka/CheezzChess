@@ -10,7 +10,8 @@ use std::time::Instant;
 use vampirc_uci::Duration as VampDuration;
 use vampirc_uci::{UciInfoAttribute, UciMessage, UciTimeControl};
 
-mod searcher;
+pub mod searcher;
+mod tests;
 
 pub struct Engine {
     board: Option<Board>,

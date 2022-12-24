@@ -31,7 +31,10 @@ fn test_calculated_time_returns_move_time_without_increments() {
 fn test_calculated_time_returns_move_time_with_increments() {
     // Duration is small because opponent has much more time
     assert_eq!(
-        calculate_time(time_left(Some(120), Some(120), Some(10000), Some(120)), Color::White),
+        calculate_time(
+            time_left(Some(120), Some(120), Some(10000), Some(120)),
+            Color::White
+        ),
         Duration::from_millis(120)
     )
 }
