@@ -127,6 +127,7 @@ dependencies = [
  "rand 0.8.4",
  "rayon",
  "simplelog",
+ "trees",
  "vampirc-uci",
 ]
 
@@ -764,6 +765,12 @@ dependencies = [
  "libc",
  "winapi 0.3.9",
 ]
+
+[[package]]
+name = "trees"
+version = "0.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0de5f738ceab88e2491a94ddc33c3feeadfa95fedc60363ef110845df12f3878"
 
 [[package]]
 name = "typenum"

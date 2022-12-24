@@ -20,9 +20,18 @@ fn time_left(
 }
 
 #[test]
-fn test_calculated_time_returns_move_time_when_present() {
+fn test_calculated_time_returns_move_time_without_increments() {
     assert_eq!(
         calculate_time(time_left(Some(120), None, Some(120), None), Color::White),
         Duration::from_millis(3)
+    )
+}
+
+#[test]
+fn test_calculated_time_returns_move_time_with_increments() {
+    // Duration is small because opponent has much more time
+    assert_eq!(
+        calculate_time(time_left(Some(120), Some(120), Some(10000), Some(120)), Color::White),
+        Duration::from_millis(120)
     )
 }
