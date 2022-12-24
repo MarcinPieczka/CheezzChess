@@ -1,16 +1,15 @@
-use log::info;
 use fibers::io::stdin;
+use log::info;
 use std::io::{BufRead, BufReader};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
-use vampirc_uci::{parse_one};
+use vampirc_uci::parse_one;
 
 use engine::Engine;
 
 mod engine;
-
 
 fn main() {
     let mut input = String::new();
