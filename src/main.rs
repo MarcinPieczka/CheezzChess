@@ -1,16 +1,11 @@
-use log::{info, SetLoggerError};
-use simplelog::{Config, LevelFilter, WriteLogger};
-use std::fs;
-
+use log::info;
 use fibers::io::stdin;
 use std::io::{BufRead, BufReader};
-use std::path::Path;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
-use std::{io, panic};
-use vampirc_uci::{parse_one, UciMessage};
+use vampirc_uci::{parse_one};
 
 use engine::Engine;
 
@@ -44,5 +39,5 @@ fn main() {
     }
 
     info!("Joining engine controller thread...");
-    handle.join();
+    handle.join().ok();
 }

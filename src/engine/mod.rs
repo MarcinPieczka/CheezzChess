@@ -9,33 +9,13 @@ use vampirc_uci::{UciInfoAttribute, UciMessage, UciTimeControl};
 use log::info;
 
 
-struct SearchHandle {
-    start_time: Instant,
-    search_length: Option<Duration>,
-}
-
 pub struct Engine {
     board: Option<Board>,
     best_move: Option<ChessMove>,
     channel_sender: SyncSender<UciMessage>,
     channel_receiver: Receiver<UciMessage>,
-    searcher: Option<SearchHandle>,
 }
 
-impl SearchHandle {
-    fn new(search_length: Option<Duration>) -> Self {
-        let start_time = Instant::now();
-
-        SearchHandle {
-            search_length,
-            start_time,
-        }
-    }
-
-    fn elapsed(&self) -> Duration {
-        self.start_time.elapsed()
-    }
-}
 
 impl Default for Engine {
     fn default() -> Self {
@@ -45,16 +25,15 @@ impl Default for Engine {
             best_move: None,
             channel_sender: tx,
             channel_receiver: rx,
-            searcher: None,
         }
     }
 }
 
 impl Engine {
     pub fn start(self) -> (JoinHandle<()>, SyncSender<UciMessage>) {
-        let tx1 = self.channel_sender.clone();
+        let sender = self.channel_sender.clone();
 
-        (thread::spawn(|| self.run()), tx1)
+        (thread::spawn(|| self.run()), sender)
     }
 
     fn run(mut self) {
@@ -121,9 +100,6 @@ impl Engine {
 
             UciMessage::PonderHit => {}
             UciMessage::Quit => {
-                info!("Told to quit. Shutting down Threadpool...");
-                // THREADS.quit();
-                info!("Threadpool shut down.");
                 return false;
             }
             UciMessage::Go {
@@ -139,32 +115,6 @@ impl Engine {
     }
 }
 
-fn calculate_time(time_control: UciTimeControl, to_move: Color) -> Option<Duration> {
-    match time_control {
-        UciTimeControl::MoveTime(duration) => duration.to_std().ok(),
-        UciTimeControl::TimeLeft {
-            white_time,
-            black_time,
-            moves_to_go,
-            ..
-        } => {
-            match to_move {
-                Color::White => white_time,
-                Color::Black => black_time,
-            }
-            .map(|d| {
-                //Convert from vampirc Duration to std duration.
-                d.to_std().ok()
-            })
-            .flatten()
-            .map(|d| {
-                //Divide by moves until next time control or some sensible default
-                d.div_f32(moves_to_go.unwrap_or(40) as f32)
-            })
-        }
-        _ => None,
-    }
-}
 
 fn rand_move(board: Option<&Board>) {
     match board {

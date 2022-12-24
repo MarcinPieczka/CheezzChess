@@ -1,0 +1,8 @@
+
+1. UCI engine responding with random move
+
+<= CURRENT STATE =>
+
+2. Single calculating thread, always starting from the beginning,
+   fittness calculated just by summing pieces points
+3. Implement additional UCI messages, like info
