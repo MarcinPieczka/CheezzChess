@@ -10,6 +10,7 @@ use vampirc_uci::parse_one;
 use engine::Engine;
 
 mod engine;
+mod tests;
 
 fn main() {
     let mut input = String::new();

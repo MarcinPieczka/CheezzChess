@@ -4,7 +4,7 @@ use std::str::FromStr;
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, SyncSender};
 use std::thread;
-use std::thread::{JoinHandle, sleep};
+use std::thread::{sleep, JoinHandle};
 use std::time::Duration;
 use std::time::Instant;
 use vampirc_uci::Duration as VampDuration;
@@ -105,7 +105,7 @@ impl Engine {
                 let move_time = calculate_time(time_control, self.board.unwrap().side_to_move());
                 sleep(move_time);
                 rand_move(Option::as_ref(&self.board))
-            },
+            }
             _ => {}
         }
 
@@ -126,10 +126,10 @@ fn rand_move(board: Option<&Board>) {
     }
 }
 
-fn calculate_time(time_control: Option<UciTimeControl>, color: Color) -> Duration {
+pub fn calculate_time(time_control: Option<UciTimeControl>, color: Color) -> Duration {
     let move_time;
     match time_control {
-        Some(UciTimeControl::TimeLeft{
+        Some(UciTimeControl::TimeLeft {
             white_time,
             black_time,
             white_increment,
