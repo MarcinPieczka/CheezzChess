@@ -10,6 +10,8 @@ use std::time::Instant;
 use vampirc_uci::Duration as VampDuration;
 use vampirc_uci::{UciInfoAttribute, UciMessage, UciTimeControl};
 
+use crate::engine::lookup::Lookup;
+
 pub mod lookup;
 
 mod tests;
@@ -107,7 +109,11 @@ impl Engine {
                 search_control,
             } => {
                 let move_time = calculate_time(time_control, self.board.unwrap().side_to_move());
-                sleep(move_time);
+                // sleep(move_time);
+                let mut finder = Lookup::new(&self.board.unwrap());
+                finder.find_positions(10000);
+                finder.evaluate_leafs();
+                finder.min_max();
                 rand_move(Option::as_ref(&self.board))
             }
             _ => {}
