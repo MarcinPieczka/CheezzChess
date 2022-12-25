@@ -111,8 +111,8 @@ impl Engine {
                 let move_time = calculate_time(time_control, self.board.unwrap().side_to_move());
                 // sleep(move_time);
                 let mut finder = Lookup::new(&self.board.unwrap());
-                finder.run(10000);
-                rand_move(Option::as_ref(&self.board))
+                finder.run(10000000);
+                // rand_move(Option::as_ref(&self.board))
             }
             _ => {}
         }
@@ -121,18 +121,18 @@ impl Engine {
     }
 }
 
-fn rand_move(board: Option<&Board>) {
-    match board {
-        None => {}
-        Some(some_board) => {
-            let mut move_iter = MoveGen::new_legal(some_board);
-            match move_iter.next() {
-                Some(chess_move) => bestmove(chess_move, None),
-                None => {}
-            }
-        }
-    }
-}
+// fn rand_move(board: Option<&Board>) {
+//     match board {
+//         None => {}
+//         Some(some_board) => {
+//             let mut move_iter = MoveGen::new_legal(some_board);
+//             match move_iter.next() {
+//                 Some(chess_move) => bestmove(chess_move, None),
+//                 None => {}
+//             }
+//         }
+//     }
+// }
 
 pub fn calculate_time(time_control: Option<UciTimeControl>, color: Color) -> Duration {
     let move_time;
@@ -184,9 +184,9 @@ fn move_time_from_time_left(
     let total_my_time = my_time.unwrap() + my_increment.unwrap_or(VampDuration::seconds(0));
     let total_opponent_time = opponent_time.unwrap_or(my_time.unwrap())
         + opponent_increment.unwrap_or(VampDuration::seconds(0));
-    let time_ratio = total_opponent_time.num_milliseconds() / total_my_time.num_milliseconds();
-    let move_time = my_time.unwrap().num_milliseconds() / (time_ratio.pow(5) * 40);
-    VampDuration::milliseconds(move_time) + my_increment.unwrap_or(VampDuration::seconds(0))
+    let time_ratio = total_opponent_time.num_milliseconds() as f64 / total_my_time.num_milliseconds() as f64;
+    let move_time = my_time.unwrap().num_milliseconds() as f64 / (time_ratio.powf(5.0) * 40.0);
+    VampDuration::milliseconds(move_time as i64) + my_increment.unwrap_or(VampDuration::seconds(0))
 }
 
 fn id() {

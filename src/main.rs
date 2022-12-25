@@ -6,12 +6,19 @@ use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
 use vampirc_uci::parse_one;
+use simplelog::{Config, LevelFilter, WriteLogger};
+use std::path::Path;
+use std::fs::File;
 
 use engine::Engine;
 
 mod engine;
 
 fn main() {
+    let path = Path::new("engine.log");
+    let logfile = File::create(path).ok().unwrap();
+    let _ = WriteLogger::init(LevelFilter::Info, Config::default(), logfile);
+
     let mut input = String::new();
     let running = Arc::new(AtomicBool::new(true));
     let (handle, tx) = {
