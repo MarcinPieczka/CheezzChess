@@ -54,7 +54,8 @@ impl Searcher {
 
         for chess_move in MoveGen::new_legal(&board) {
             println!("{:?}", chess_move);
-            root.append(-tr(MoveNode::new(&board, Some(chess_move))));
+            let child = -tr(MoveNode::new(&board, Some(chess_move)));
+            root.append(child);
             nodes += 1;
         }
         // for d in 1..5 {
