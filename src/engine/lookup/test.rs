@@ -7,13 +7,7 @@ fn test_generating_positions() {
     let mut lookup = Lookup::new(&board);
     println!("{:?}", board.side_to_move());
     lookup.find_positions(5);
-    let expected_move = unsafe { 
-        ChessMove::new(
-            Square::new(8), 
-            Square::new(16), 
-            None
-        ) 
-    };
+    let expected_move = unsafe { ChessMove::new(Square::new(8), Square::new(16), None) };
     println!("{:?}", lookup.positions);
     assert_eq!(
         lookup.positions[1],
