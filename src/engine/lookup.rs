@@ -4,7 +4,7 @@ use trees::{fr, tr, Forest, Tree};
 
 mod test;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Position {
     // all this should be compressed as much as possible later
     //
@@ -47,29 +47,34 @@ pub struct Lookup {
 }
 
 impl Lookup {
-    pub fn find_positions(&mut self, board: &Board, max_nodes: u32) {
-        let mut i: u32 = 0;
-        self.positions.push(Position::new(board, None, 0, 0));
+    pub fn new(board: &Board)-> Lookup {
+        Lookup {
+            positions: vec![Position::new(board, None, 0, 0)]
+        }
+    }
+
+    pub fn find_positions(&mut self, max_nodes: usize) {
+        let mut i: usize = 0;
         loop {
             let children: Vec<Position>;
             {
-                let parent = &self.positions[i as usize];
+                let parent = &self.positions[i];
 
                 children = MoveGen::new_legal(
                     &(*parent.board.as_ref().unwrap())
                 ).map(|mv| Position::new(
                     &(*parent.board.as_ref().unwrap()), 
                     Some(mv), 
-                    self.positions[i as usize].depth + 1, 
-                    i)
+                    self.positions[i].depth + 1, 
+                    i as u32)
                 ).collect();
             }
 
             self.positions.extend(children);
 
-            self.positions[i as usize].board = None;
+            self.positions[i].board = None;
             i += 1;
-            if i == max_nodes {
+            if self.positions.len() >= max_nodes {
                 break;
             }
         };
