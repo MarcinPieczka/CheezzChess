@@ -111,9 +111,7 @@ impl Engine {
                 let move_time = calculate_time(time_control, self.board.unwrap().side_to_move());
                 // sleep(move_time);
                 let mut finder = Lookup::new(&self.board.unwrap());
-                finder.find_positions(10000);
-                finder.evaluate_leafs();
-                finder.min_max();
+                finder.run(10000);
                 rand_move(Option::as_ref(&self.board))
             }
             _ => {}

@@ -55,6 +55,12 @@ impl Lookup {
         }
     }
 
+    pub fn run(&mut self, max_nodes: usize) {
+        self.find_positions(10000);
+        self.evaluate_leafs();
+        self.min_max();
+    }
+
     pub fn find_positions(&mut self, max_nodes: usize) {
         let mut i: usize = 0;
         loop {
