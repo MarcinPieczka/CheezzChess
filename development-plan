@@ -1,8 +1,10 @@
 
-1. UCI engine responding with random move
+TODO:
+- write such tests that proove that it's working
+- make it work from start till the beginning
 
-<= CURRENT STATE =>
-
-2. Single calculating thread, always starting from the beginning,
-   fittness calculated just by summing pieces points
-3. Implement additional UCI messages, like info
+IDEAS:
+- memory usage as command line argument
+- remove Board from Position, use parent for this
+- add forward reference for best next move from given position
+- add cache of board hashes that maps Board-Hash <-> [Parents]
