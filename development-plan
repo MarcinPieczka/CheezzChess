@@ -1,9 +1,7 @@
 
 TODO:
-- fix warnings
-- fix logs
 - write such tests that proove that it's working (play itself)
-- make it work from start till the beginning
+- don't evaluate leafs - instead evaluate what's not evaluated
 
 IDEAS:
 - memory usage as command line argument

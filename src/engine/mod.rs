@@ -12,6 +12,7 @@ use vampirc_uci::{UciMessage, UciTimeControl};
 use crate::engine::lookup::Lookup;
 
 pub mod lookup;
+pub mod eval;
 
 mod tests;
 
@@ -71,6 +72,7 @@ impl Engine {
                 fen,
                 moves,
             } => {
+                info!("UciMessage::Position {:?}, {:?}", fen, moves);
                 let mut game = if let Some(fen) = fen {
                     Game::from_str(fen.as_str()).unwrap()
                 } else {
@@ -82,6 +84,8 @@ impl Engine {
                 }
 
                 self.board = Some(game.current_position());
+                info!("Starting Board:");
+                lookup::show_board(self.board.unwrap());
             }
             UciMessage::SetOption { .. } => {}
             UciMessage::UciNewGame => {
@@ -107,11 +111,12 @@ impl Engine {
                 time_control,
                 search_control: _,
             } => {
+                info!("UciMessage::Go {:?}", time_control);
                 let _move_time = calculate_time(time_control, self.board.unwrap().side_to_move());
                 // sleep(move_time);
                 let mut finder = Lookup::new(&self.board.unwrap());
                 finder.run(100000);
-                // 10000000 nodes is ok
+                //finder.run(10000000);
             }
             _ => {}
         }

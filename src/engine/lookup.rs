@@ -1,6 +1,7 @@
 use chess::{Board, ChessMove, Color, MoveGen, Piece, Square};
 use log::info;
 use vampirc_uci::UciMessage;
+use crate::engine::eval::eval;
 
 mod test;
 
@@ -12,25 +13,23 @@ pub struct Position {
     // position_eval top down
     last_move: ChessMove,
     board: Option<Box<Board>>,
-    position_eval: f32,
-    style_eval: f32,
+    position_eval: i16,
     depth: u8,
     parent: u32,
 }
 
 impl Position {
     pub fn new(board: &Board, last_move: Option<ChessMove>, depth: u8, parent: u32) -> Position {
-        let eval: f32;
+        let eval: i16;
         match depth % 2 {
-            1 => {eval = 99999999.0;},
-            _ => {eval = -99999999.0;},
+            1 => {eval = i16::MAX;},
+            _ => {eval = i16::MIN;},
         }
         match last_move {
             Some(mv) => Position {
                 last_move: mv,
                 board: Some(Box::new(board.make_move_new(mv))),
                 position_eval: eval,
-                style_eval: 0.0,
                 depth: depth,
                 parent: parent,
             },
@@ -38,7 +37,6 @@ impl Position {
                 last_move: ChessMove::default(),
                 board: Some(Box::new(board.clone())),
                 position_eval: eval,
-                style_eval: 0.0,
                 depth: depth,
                 parent: parent,
             },
@@ -49,6 +47,7 @@ impl Position {
 pub struct Lookup {
     positions: Vec<Position>,
     color: Color,
+    board: Board,
 }
 
 impl Lookup {
@@ -56,6 +55,7 @@ impl Lookup {
         Lookup {
             positions: vec![Position::new(board, None, 0, 0)],
             color: board.side_to_move(),
+            board: board.clone()
         }
     }
 
@@ -98,6 +98,18 @@ impl Lookup {
         info!("number of positions after search: {}", self.positions.len());
     }
 
+    pub fn all_moves(&self, position: &Position)-> Vec<ChessMove> {
+        let mut moves = vec![position.last_move];
+        let mut parent = position.clone();
+        loop {
+            parent = &self.positions[parent.parent as usize];
+            moves.push(parent.last_move);
+            if parent.parent == 0 {break;}
+        }
+        moves.reverse();
+        moves
+    }
+
     pub fn evaluate_leafs(&mut self) {
         let last_parent = self.positions.last().unwrap().parent.clone();
         for i in (((last_parent + 1) as usize)..(self.positions.len())).rev() {
@@ -105,81 +117,53 @@ impl Lookup {
         }
     }
 
-    pub fn eval_position(&self, position: &Position) -> f32 {
-        let board = &(*position.board.as_ref().unwrap());
-        let mut score: f32 = 0.0;
-        for color in [Color::White, Color::Black] {
-            let mut color_score: f32 = 0.0;
-            for piece in [
-                Piece::Queen,
-                Piece::Rook,
-                Piece::Bishop,
-                Piece::Knight,
-                Piece::Pawn,
-            ] {
-                let mut piece_score: f32 = 0.0;
-
-                let num_pieces = (board.color_combined(color) & board.pieces(piece)).popcnt();
-                let mut multiplier = 1.0;
-                match color {
-                    _ if color == self.color => {}
-                    _ => multiplier = -1.0,
-                }
-
-                match piece {
-                    Piece::Queen => piece_score += multiplier * 9.0,
-                    Piece::Rook => piece_score += multiplier * 5.0,
-                    Piece::Bishop => piece_score += multiplier * 3.1,
-                    Piece::Knight => piece_score += multiplier * 2.9,
-                    Piece::Pawn => piece_score += multiplier * 1.0,
-                    _ => {}
-                }
-                color_score += piece_score * num_pieces as f32;
-            }
-            score += color_score;
-        }
-        score
+    pub fn eval_position(&self, position: &Position) -> i16 {
+        eval(&self.board, self.all_moves(position))
     }
 
     pub fn min_max(&mut self) {
         info!("Starting min max with {} positions", self.positions.len());
+
         for i in (1..(self.positions.len())).rev() {
+            let best;
+            match self.color {
+                Color::White => {best = (self.positions[i].depth % 2) as usize;},
+                Color::Black => {best = ((self.positions[i].depth + 1) % 2) as usize;}
+            }
+
             let parent_i = self.positions[i].parent as usize;
+
             let mut values = vec![
                 self.positions[i].position_eval,
                 self.positions[parent_i].position_eval,
             ];
-            values.sort_by(|a, b| a.total_cmp(&b));
-            self.positions[parent_i].position_eval =
-                values[(self.positions[i].depth % 2) as usize];
-            if i > self.positions.len() - 5 {
+            values.sort();
+            self.positions[parent_i].position_eval = values[best];
+
+            if i == self.positions.len() - 1 {
                 info!("Child eval: {}, Parent eval: {}, Depth: {}", 
-                self.positions[i].position_eval, 
-                self.positions[parent_i].position_eval,
-                self.positions[i].depth
-            );
+                    self.positions[i].position_eval, 
+                    self.positions[parent_i].position_eval,
+                    self.positions[i].depth
+                );
                 show_board(self.positions[i].board.as_ref().unwrap().clone().as_ref().clone());
-                for piece in *(*self.positions[i].board.as_ref().unwrap()).pieces(Piece::Pawn) {
-                    info!("{}", piece);
-                }
-                info!("{}", &(*self.positions[i].board.as_ref().unwrap()).to_string());
             }
         }
     }
 
     pub fn best_move(&self) {
         let mut best = ChessMove::default();
-        let mut max_eval = -999999990.0;
+        let mut max_eval = i16::MIN;
         let mut iterator = self.positions.iter();
         iterator.next();
         for position in iterator {
+            if position.depth > 1 {
+                break;
+            }
             info!("Move: {} has eval: {}", position.last_move, position.position_eval);
             if position.position_eval > max_eval {
                 max_eval = position.position_eval;
                 best = position.last_move;
-            }
-            if position.depth > 1 {
-                break;
             }
         }
         println!("{}", UciMessage::BestMove { best_move: best, ponder: None });
@@ -189,7 +173,7 @@ impl Lookup {
 
 
 pub fn show_board(board: Board) {
-    for l in 0..8 {
+    for l in (0..8).rev() {
         let mut line = "".to_string();
         for f in 0..8 {
             match board.piece_on(unsafe{Square::new(f + l * 8)}) {
