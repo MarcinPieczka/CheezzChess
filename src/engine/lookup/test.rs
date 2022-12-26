@@ -1,5 +1,6 @@
 use crate::engine::lookup::{Lookup, Position};
-use chess::{Board, ChessMove, Game, Square};
+use chess::{ChessMove, Game, Board, Square};
+
 
 #[test]
 fn test_generating_positions_generates_correct_first_move() {

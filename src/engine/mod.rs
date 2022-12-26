@@ -65,9 +65,9 @@ impl Engine {
             UciMessage::IsReady => {
                 readyok();
             }
-            UciMessage::Register { later, name, code } => {}
+            UciMessage::Register { later: _, name: _, code: _ } => {}
             UciMessage::Position {
-                startpos,
+                startpos: _,
                 fen,
                 moves,
             } => {
@@ -105,9 +105,9 @@ impl Engine {
             }
             UciMessage::Go {
                 time_control,
-                search_control,
+                search_control: _,
             } => {
-                let move_time = calculate_time(time_control, self.board.unwrap().side_to_move());
+                let _move_time = calculate_time(time_control, self.board.unwrap().side_to_move());
                 // sleep(move_time);
                 let mut finder = Lookup::new(&self.board.unwrap());
                 finder.run(100000);
@@ -129,7 +129,7 @@ pub fn calculate_time(time_control: Option<UciTimeControl>, color: Color) -> Dur
             black_time,
             white_increment,
             black_increment,
-            moves_to_go,
+            moves_to_go: _,
         }) => {
             match color {
                 Color::White => {
