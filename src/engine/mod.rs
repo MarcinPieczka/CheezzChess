@@ -4,11 +4,10 @@ use std::str::FromStr;
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, SyncSender};
 use std::thread;
-use std::thread::{sleep, JoinHandle};
+use std::thread::{JoinHandle};
 use std::time::Duration;
-use std::time::Instant;
 use vampirc_uci::Duration as VampDuration;
-use vampirc_uci::{UciInfoAttribute, UciMessage, UciTimeControl};
+use vampirc_uci::{UciMessage, UciTimeControl};
 
 use crate::engine::lookup::Lookup;
 
@@ -111,8 +110,8 @@ impl Engine {
                 let move_time = calculate_time(time_control, self.board.unwrap().side_to_move());
                 // sleep(move_time);
                 let mut finder = Lookup::new(&self.board.unwrap());
-                finder.run(10000000);
-                // rand_move(Option::as_ref(&self.board))
+                finder.run(100000);
+                // 10000000 nodes is ok
             }
             _ => {}
         }
@@ -121,18 +120,6 @@ impl Engine {
     }
 }
 
-// fn rand_move(board: Option<&Board>) {
-//     match board {
-//         None => {}
-//         Some(some_board) => {
-//             let mut move_iter = MoveGen::new_legal(some_board);
-//             match move_iter.next() {
-//                 Some(chess_move) => bestmove(chess_move, None),
-//                 None => {}
-//             }
-//         }
-//     }
-// }
 
 pub fn calculate_time(time_control: Option<UciTimeControl>, color: Color) -> Duration {
     let move_time;

@@ -2,7 +2,7 @@ use crate::engine::lookup::{Lookup, Position};
 use chess::{Board, ChessMove, Game, Square};
 
 #[test]
-fn test_generating_positions() {
+fn test_generating_positions_generates_correct_first_move() {
     let board = Game::new().current_position();
     let mut lookup = Lookup::new(&board);
     println!("{:?}", board.side_to_move());

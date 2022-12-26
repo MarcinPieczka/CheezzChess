@@ -1,9 +1,6 @@
-use chess::{BitBoard, Board, ChessMove, Color, File, Game, MoveGen, Piece, Rank, Square};
+use chess::{Board, ChessMove, Color, MoveGen, Piece, Square};
 use log::info;
 use vampirc_uci::UciMessage;
-use enum_iterator::all;
-use std::mem;
-use trees::{fr, tr, Forest, Tree};
 
 mod test;
 

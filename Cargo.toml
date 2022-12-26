@@ -17,5 +17,3 @@ ctrlc = { version = "3.0", features = ["termination"] }
 num_cpus = "1.13.0"
 lazy_static = "1.4.0"
 fibers = "0.1"
-trees = "0.4.2"
-enum-iterator = "1.2.0"
