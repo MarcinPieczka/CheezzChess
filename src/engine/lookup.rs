@@ -12,8 +12,8 @@ pub struct Position {
     // style_eval will be filled bottom up, and
     // position_eval top down
     last_move: ChessMove,
-    board: Option<Box<Board>>,
     eval: Option<i16>,
+    board: Option<Box<Board>>,
     depth: u8,
     parent: u32,
     best_next: Option<u32>,
@@ -72,12 +72,13 @@ impl Lookup {
             let children: Vec<Position>;
             {
                 let parent = &self.positions[i];
-                
-                children = MoveGen::new_legal(&(*parent.board.as_ref().unwrap()))
-                    .filter(|mv| {parent.board.as_ref().unwrap().legal(*mv)})
+                let parent_board = self.get_board(parent);
+
+                children = MoveGen::new_legal(&parent_board)
+                    .filter(|mv| {parent_board.legal(*mv)})
                     .map(|mv| {
                         Position::new(
-                            &(*parent.board.as_ref().unwrap()),
+                            &parent_board,
                             Some(mv),
                             self.positions[i].depth + 1,
                             i as u32,
@@ -85,10 +86,8 @@ impl Lookup {
                     })
                     .collect();
             }
-
             self.positions.extend(children);
 
-            self.positions[i].board = None;
             i += 1;
             if self.positions.len() >= max_nodes {
                 break;
@@ -98,15 +97,36 @@ impl Lookup {
     }
 
     pub fn all_moves(&self, position: &Position)-> Vec<ChessMove> {
-        let mut moves = vec![position.last_move];
+        let mut moves = vec![];
+        if position.depth == 0 {
+            return moves
+        }
         let mut parent = position.clone();
         loop {
-            parent = &self.positions[parent.parent as usize];
             moves.push(parent.last_move);
             if parent.parent == 0 {break;}
+            parent = &self.positions[parent.parent as usize];
         }
         moves.reverse();
         moves
+    }
+
+    pub fn get_board(&self, position: &Position)-> Board {
+        let mut board = self.board.clone();
+        for mv in self.all_moves(position) {
+            board = board.make_move_new(mv);
+        }
+        if board != self.board {
+            info!("New board, depth {}, move {:?}", position.depth, position.last_move);
+            info!("Moves: {:?}", self.all_moves(position));
+            info!("Parent: {:?}", position.parent);
+
+            show_board(board);
+            info!("Old board");
+            show_board(self.board);
+            info!("===========================");
+        }
+        board
     }
 
 
@@ -151,7 +171,7 @@ impl Lookup {
                     self.positions[parent_i].eval,
                     self.positions[i].depth
                 );
-                show_board(self.positions[i].board.as_ref().unwrap().clone().as_ref().clone());
+                show_board(self.get_board(&self.positions[i]));
             }
         }
     }
@@ -175,6 +195,7 @@ impl Lookup {
                 break;
             }
             info!("Move: {} has eval: {:?}", position.last_move, position.eval);
+            show_board(self.get_board(position));
         }
     }
 }
