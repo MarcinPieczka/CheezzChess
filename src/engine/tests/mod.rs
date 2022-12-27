@@ -1,10 +1,10 @@
 #[cfg(test)]
 mod tests {
-    use vampirc_uci::Duration as VampDuration;
-    use vampirc_uci::{UciTimeControl};
-    use chess::{Color};
     use crate::engine::calculate_time;
+    use chess::Color;
     use std::time::Duration;
+    use vampirc_uci::Duration as VampDuration;
+    use vampirc_uci::UciTimeControl;
 
     fn time_left(
         white_time: Option<i64>,

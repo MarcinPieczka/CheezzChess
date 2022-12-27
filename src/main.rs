@@ -1,14 +1,14 @@
 use fibers::io::stdin;
 use log::info;
+use simplelog::{Config, LevelFilter, WriteLogger};
+use std::fs::File;
 use std::io::{BufRead, BufReader};
+use std::path::Path;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
 use vampirc_uci::parse_one;
-use simplelog::{Config, LevelFilter, WriteLogger};
-use std::path::Path;
-use std::fs::File;
 
 use engine::Engine;
 

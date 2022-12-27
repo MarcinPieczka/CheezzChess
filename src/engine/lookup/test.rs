@@ -1,4 +1,3 @@
-
 #[cfg(test)]
 mod tests {
     use crate::engine::lookup::{Lookup, Position};
@@ -14,7 +13,7 @@ mod tests {
         println!("{:?}", lookup.positions);
         assert_eq!(
             lookup.positions[1],
-            Position::new(&board, Some(expected_move), 1, 0)
+            Position::new(Some(expected_move), 1, 0)
         );
     }
 }

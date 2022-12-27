@@ -1,11 +1,21 @@
 
 TODO:
-- write such tests that proove that it's working (play itself)
-- don't evaluate leafs - instead evaluate what's not evaluated
+- write such tests that proove that it's working, for instance:
+8 	♜ 	♞ 	♝ 	♛ 	♚ 	♝ 	♞ 	♜
+7 	♟︎ 	♟︎ 	♟︎ 	♟︎ 	♟︎ 	♟︎ 	♟︎ 	♟︎
+6 	
+							
+5 	
+							
+4 	
+							
+3 	
+							
+2 	♙ 	♙ 	♙ 	♙ 	♙ 	♙ 	♙ 	♙
+1 	♖ 	♘ 	♗ 	♕ 	♔ 	♗ 	♘ 	♖
+	a 	b 	c 	d 	e 	f 	g 	h 
 
 IDEAS:
 - memory usage as command line argument
-- remove Board from Position, use parent for this
-- add forward reference for best next move from given position
 - add cache of board hashes that maps Board-Hash <-> [Parents]
 - neural network evaluator that has bitbords of {Color, Piece} on input

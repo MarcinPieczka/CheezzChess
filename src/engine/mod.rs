@@ -4,15 +4,15 @@ use std::str::FromStr;
 use std::sync::mpsc;
 use std::sync::mpsc::{Receiver, SyncSender};
 use std::thread;
-use std::thread::{JoinHandle};
+use std::thread::JoinHandle;
 use std::time::Duration;
 use vampirc_uci::Duration as VampDuration;
 use vampirc_uci::{UciMessage, UciTimeControl};
 
 use crate::engine::lookup::Lookup;
 
-pub mod lookup;
 pub mod eval;
+pub mod lookup;
 
 mod tests;
 
@@ -66,7 +66,11 @@ impl Engine {
             UciMessage::IsReady => {
                 readyok();
             }
-            UciMessage::Register { later: _, name: _, code: _ } => {}
+            UciMessage::Register {
+                later: _,
+                name: _,
+                code: _,
+            } => {}
             UciMessage::Position {
                 startpos: _,
                 fen,
@@ -115,8 +119,8 @@ impl Engine {
                 let _move_time = calculate_time(time_control, self.board.unwrap().side_to_move());
                 // sleep(move_time);
                 let mut finder = Lookup::new(&self.board.unwrap());
-                finder.run(100000);
-                //finder.run(10000000);
+                //finder.run(100000);
+                finder.run(10000000);
             }
             _ => {}
         }
@@ -124,7 +128,6 @@ impl Engine {
         true
     }
 }
-
 
 pub fn calculate_time(time_control: Option<UciTimeControl>, color: Color) -> Duration {
     let move_time;
@@ -176,7 +179,8 @@ fn move_time_from_time_left(
     let total_my_time = my_time.unwrap() + my_increment.unwrap_or(VampDuration::seconds(0));
     let total_opponent_time = opponent_time.unwrap_or(my_time.unwrap())
         + opponent_increment.unwrap_or(VampDuration::seconds(0));
-    let time_ratio = total_opponent_time.num_milliseconds() as f64 / total_my_time.num_milliseconds() as f64;
+    let time_ratio =
+        total_opponent_time.num_milliseconds() as f64 / total_my_time.num_milliseconds() as f64;
     let move_time = my_time.unwrap().num_milliseconds() as f64 / (time_ratio.powf(5.0) * 40.0);
     VampDuration::milliseconds(move_time as i64) + my_increment.unwrap_or(VampDuration::seconds(0))
 }
