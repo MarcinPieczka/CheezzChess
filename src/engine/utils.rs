@@ -1,15 +1,21 @@
-use chess::{Board, BoardBuilder, Color, File, Piece, Rank, Square};
+use chess::{Board, BoardBuilder, CastleRights, Color, File, Piece, Rank, Square};
 use std::string::String as StdString;
 use string::String;
 
-pub fn board_from_textboard(textboard: &str) -> Board {
+pub fn board_from_textboard(
+    textboard: &str,
+    white_castle_rights: CastleRights,
+    black_castle_rights: CastleRights,
+    side_to_move: Color,
+) -> Board {
     let mut position = BoardBuilder::new();
     let lines = textboard_lines(textboard);
-    for rank in (0..7).rev() {
-        let pieces: Vec<Option<(Piece, Color)>> = lines[rank]
+    for i in (0..8) {
+        let rank = 7 - i;
+        let pieces: Vec<Option<(Piece, Color)>> = lines[i]
             .split("|")
             .filter(|field| field.len() > 1)
-            .map(|line| char_to_piece(line))
+            .map(|line| char_to_piece(line.trim()))
             .collect();
         for (file, piece_color) in pieces.iter().enumerate() {
             match piece_color {
@@ -24,7 +30,11 @@ pub fn board_from_textboard(textboard: &str) -> Board {
             }
         }
     }
-    Board::default()
+    position.castle_rights(Color::White, white_castle_rights);
+    position.castle_rights(Color::Black, black_castle_rights);
+    position.side_to_move(side_to_move);
+
+    Board::try_from(position).unwrap()
 }
 
 fn textboard_lines(textboard: &str) -> Vec<String> {
@@ -73,7 +83,7 @@ fn char_to_piece(char: &str) -> Option<(Piece, Color)> {
 
 #[cfg(test)]
 mod tests {
-    use super::board_from_str;
+    use super::*;
 
     #[test]
     fn test_generating_start_position() {
@@ -88,7 +98,12 @@ mod tests {
         1| ♜ | ♞ | ♝ | ♛ | ♚ | ♝ | ♞ | ♜ |
         a   b   c   d   e   f   g   h 
         "#;
-        let board = board_from_str(position);
+        let board = board_from_textboard(
+            position,
+            CastleRights::Both,
+            CastleRights::Both,
+            Color::White,
+        );
         assert_eq!(board, Board::default());
     }
 }
