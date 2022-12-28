@@ -1,7 +1,47 @@
-use chess::Board;
+use chess::{Piece, Board, Color};
+use string::String;
+use std::string::String as StdString;
+
 
 pub fn board_from_str(board_str: &str)-> Board {
+    let text: String = String::from_str(board_str);
+    
     Board::default()
+}
+
+fn piece_to_char(piece: Piece, color: Color)-> StdString {
+    match (piece, color) {
+        (Piece::King, Color::White) => "♚".to_string(),
+        (Piece::Queen, Color::White) => "♛".to_string(),
+        (Piece::Rook, Color::White) => "♜".to_string(),
+        (Piece::Bishop, Color::White) => "♝".to_string(),
+        (Piece::Knight, Color::White) => "♞".to_string(),
+        (Piece::Pawn, Color::White) => "♟︎".to_string(),
+        (Piece::King, Color::Black) => "♔".to_string(),
+        (Piece::Queen, Color::Black) => "♕".to_string(),
+        (Piece::Rook, Color::Black) => "♖".to_string(),
+        (Piece::Bishop, Color::Black) => "♗".to_string(),
+        (Piece::Knight, Color::Black) => "♘".to_string(),
+        (Piece::Pawn, Color::Black) => "♙".to_string()
+    }
+}
+
+fn char_to_piece(char: &str)-> Option<(Piece, Color)> {
+    match char {
+        "♚" => Some((Piece::King, Color::White)),
+        "♛" => Some((Piece::Queen, Color::White)),
+        "♜" => Some((Piece::Rook, Color::White)),
+        "♝" => Some((Piece::Bishop, Color::White)),
+        "♞" => Some((Piece::Knight, Color::White)),
+        "♟︎" => Some((Piece::Pawn, Color::White)),
+        "♔" => Some((Piece::King, Color::Black)),
+        "♕" => Some((Piece::Queen, Color::Black)),
+        "♖" => Some((Piece::Rook, Color::Black)),
+        "♗" => Some((Piece::Bishop, Color::Black)),
+        "♘" => Some((Piece::Knight, Color::Black)),
+        "♙" => Some((Piece::Pawn, Color::Black)),
+        _ => None
+    }
 }
 
 
