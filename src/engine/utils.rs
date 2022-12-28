@@ -1,7 +1,7 @@
 use chess::Board;
 
 pub fn board_from_str(board_str: &str)-> Board {
-
+    Board::default()
 }
 
 
