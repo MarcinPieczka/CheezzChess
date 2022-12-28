@@ -3,10 +3,19 @@ use string::String;
 use std::string::String as StdString;
 
 
-pub fn board_from_str(board_str: &str)-> Board {
-    let text: String = String::from_str(board_str);
+pub fn board_from_textboard(textboard: &str)-> Board {
+    let lines = preprocess_textboard(textboard);
     
     Board::default()
+}
+
+fn preprocess_textboard(textboard: &str)-> Vec<String> {
+    let text: String = String::from_str(textboard);
+    text.split("\n")
+        .map(|line| line.trim())
+        .filter(|line| !line.is_empty())
+        .map(|line| String::from_str(line))
+        .collect()
 }
 
 fn piece_to_char(piece: Piece, color: Color)-> StdString {
