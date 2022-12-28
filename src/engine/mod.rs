@@ -15,7 +15,6 @@ pub mod eval;
 pub mod lookup;
 pub mod utils;
 
-
 pub struct Engine {
     board: Option<Board>,
     channel_sender: SyncSender<UciMessage>,

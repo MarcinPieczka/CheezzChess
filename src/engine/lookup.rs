@@ -3,7 +3,6 @@ use chess::{Board, ChessMove, Color, MoveGen, Piece, Square};
 use log::info;
 use vampirc_uci::UciMessage;
 
-
 #[derive(Debug, PartialEq)]
 pub struct Position {
     // all this should be compressed as much as possible later
@@ -26,7 +25,7 @@ pub struct Position {
 // 3|   |   |   |   |   |   |   |   |
 // 2| ♙ | ♙ | ♙ | ♙ | ♙ | ♙ | ♙ | ♙ |
 // 1| ♖ | ♘ | ♗ | ♕ | ♔ | ♗ | ♘ | ♖ |
-//    a   b   c   d   e   f   g   h 
+//    a   b   c   d   e   f   g   h
 // "#;
 
 impl Position {
@@ -190,27 +189,34 @@ impl Lookup {
             }
             info!("Move: {} has eval: {:?}", position.last_move, position.eval);
         }
-        info!("Best move: {} has eval: {:?}, next moves:", best.last_move, best.eval);
+        info!(
+            "Best move: {} has eval: {:?}, next moves:",
+            best.last_move, best.eval
+        );
         let mut parent = &self.positions[best.best_next.unwrap() as usize];
         loop {
             info!("{}", parent.last_move);
             match parent.best_next {
                 Some(next_i) => {
                     parent = &self.positions[next_i as usize];
-                }, None => {break;}  
+                }
+                None => {
+                    break;
+                }
             }
         }
         for position in self.positions.iter() {
             if position.depth > 2 {
                 break;
-            } if position.depth < 2 {
+            }
+            if position.depth < 2 {
                 continue;
-            } if position.depth < 2 {
+            }
+            if position.depth < 2 {
                 continue;
             }
             info!("Move: {} has eval: {:?}", position.last_move, position.eval);
         }
-
     }
 }
 
@@ -231,7 +237,6 @@ pub fn show_board(board: Board) {
         info!("{}", line);
     }
 }
-
 
 #[cfg(test)]
 mod tests {

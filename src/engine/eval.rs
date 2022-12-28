@@ -1,9 +1,7 @@
-use chess::{Board, BoardStatus, ChessMove, Color, Piece};
 use crate::engine::utils;
-
+use chess::{Board, BoardStatus, ChessMove, Color, Piece};
 
 const CHECKMATE_EVAL: i16 = 10000;
-
 
 pub fn eval(start_board: &Board, moves: Vec<ChessMove>) -> i16 {
     let board = make_moves(start_board, moves);
@@ -73,7 +71,6 @@ fn eval_material(board: &Board) -> i16 {
     score
 }
 
-
 #[cfg(test)]
 mod tests {
 
@@ -92,9 +89,9 @@ mod tests {
         "#;
     }
 }
-// Test like this!!! 
+// Test like this!!!
 
-// 
+//
 // such string as an input, and the tests would check
-// if engine finds obvious next move, like, chooses 
+// if engine finds obvious next move, like, chooses
 // to check make, instead of taking quin
