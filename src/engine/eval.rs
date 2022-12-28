@@ -1,4 +1,3 @@
-use crate::engine::utils;
 use chess::{Board, BoardStatus, ChessMove, Color, Piece};
 
 const CHECKMATE_EVAL: i16 = 10000;
@@ -31,8 +30,8 @@ fn make_moves(start_board: &Board, moves: Vec<ChessMove>) -> Board {
 fn eval_checkmate(board: &Board) -> Option<i16> {
     if board.status() == BoardStatus::Checkmate {
         match board.side_to_move() {
-            Color::White => Some(CHECKMATE_EVAL),
-            Color::Black => Some(-CHECKMATE_EVAL),
+            Color::White => Some(-CHECKMATE_EVAL),
+            Color::Black => Some(CHECKMATE_EVAL),
         }
     } else {
         None
@@ -73,25 +72,75 @@ fn eval_material(board: &Board) -> i16 {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+    use crate::engine::utils::board_from_textboard;
+    use chess::CastleRights;
 
     #[test]
-    fn test_evaluating_check_mate() {
-        let a = r#"
-        8| ♖ | ♘ | ♗ | ♕ | ♔ | ♗ | ♘ | ♖ |
-        7| ♙ | ♙ | ♙ | ♙ | ♙ | ♙ | ♙ | ♙ |
+    fn test_evaluating_pawns() {
+        let textboard = r#"
+        8|   |   |   |   | ♔ |   |   |   |
+        7|   |   |   |   | ♙ |   |   |   |
         6|   |   |   |   |   |   |   |   |
         5|   |   |   |   |   |   |   |   |
         4|   |   |   |   |   |   |   |   |
         3|   |   |   |   |   |   |   |   |
-        2| ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ |
-        1| ♜ | ♞ | ♝ | ♛ | ♚ | ♝ | ♞ | ♜ |
+        2|   |   |   |   | ♟︎ | ♟︎ |   |   |
+        1|   |   |   |   | ♚ |   |   |   |
         a   b   c   d   e   f   g   h 
         "#;
+        let board = board_from_textboard(
+            textboard,
+            CastleRights::NoRights,
+            CastleRights::NoRights,
+            Color::White,
+        );
+        assert_eq!(eval(&board, vec![]), 100);
+    }
+
+    #[test]
+    fn test_evaluating_stalemate() {
+        let textboard = r#"
+        8|   |   |   |   |   |   |   | ♔ |
+        7|   |   |   |   |   |   |   | ♟︎ |
+        6|   |   |   |   |   |   |   | ♚ |
+        5|   |   |   |   |   |   |   |   |
+        4|   |   |   |   |   |   |   |   |
+        3|   |   |   |   |   |   |   |   |
+        2|   |   |   |   |   |   |   |   |
+        1|   |   |   |   |   |   |   |   |
+        a   b   c   d   e   f   g   h 
+        "#;
+        let board = board_from_textboard(
+            textboard,
+            CastleRights::NoRights,
+            CastleRights::NoRights,
+            Color::Black,
+        );
+        assert_eq!(board.status(), BoardStatus::Stalemate);
+        assert_eq!(eval(&board, vec![]), 0);
+    }
+
+    #[test]
+    fn test_evaluating_checkmate() {
+        let textboard = r#"
+        8|   |   |   |   |   |   |   | ♔ |
+        7|   |   |   |   |   |   | ♟︎ | ♟︎ |
+        6|   |   |   |   |   |   |   | ♚ |
+        5|   |   |   |   |   |   |   |   |
+        4|   |   |   |   |   |   |   |   |
+        3|   |   |   |   |   |   |   |   |
+        2|   |   |   |   |   |   |   |   |
+        1|   |   |   |   |   |   |   |   |
+        a   b   c   d   e   f   g   h 
+        "#;
+        let board = board_from_textboard(
+            textboard,
+            CastleRights::NoRights,
+            CastleRights::NoRights,
+            Color::Black,
+        );
+        assert_eq!(board.status(), BoardStatus::Checkmate);
+        assert_eq!(eval(&board, vec![]), CHECKMATE_EVAL);
     }
 }
-// Test like this!!!
-
-//
-// such string as an input, and the tests would check
-// if engine finds obvious next move, like, chooses
-// to check make, instead of taking quin
