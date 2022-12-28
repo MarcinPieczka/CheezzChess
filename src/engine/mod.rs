@@ -18,7 +18,6 @@ mod tests;
 
 pub struct Engine {
     board: Option<Board>,
-    best_move: Option<ChessMove>,
     channel_sender: SyncSender<UciMessage>,
     channel_receiver: Receiver<UciMessage>,
 }
@@ -28,7 +27,6 @@ impl Default for Engine {
         let (tx, rx) = mpsc::sync_channel(128);
         Engine {
             board: None,
-            best_move: None,
             channel_sender: tx,
             channel_receiver: rx,
         }

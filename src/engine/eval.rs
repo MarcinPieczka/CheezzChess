@@ -16,7 +16,6 @@ const ROWS: (
     255 << 56,
 );
 
-const BIG_CENTER: u64 = 0b0000000000000000001111000011110000111100001111000000000000000000;
 
 pub fn eval(start_board: &Board, moves: Vec<ChessMove>) -> i16 {
     let board = make_moves(start_board, moves);
@@ -64,7 +63,7 @@ fn eval_material(board: &Board) -> i16 {
             Piece::Knight,
             Piece::Pawn,
         ] {
-            let mut pieces = (board.color_combined(color) & board.pieces(piece));
+            let mut pieces = board.color_combined(color) & board.pieces(piece);
             let num_pieces = pieces.popcnt() as i16;
             if color == Color::Black {
                 pieces = pieces.reverse_colors();
@@ -106,14 +105,14 @@ fn test_eval_pawns() {
 
 // Test like this!!! 
 // let A = r#"
-// 8| ♜ | ♞ | ♝ | ♛ | ♚ | ♝ | ♞ | ♜ |
-// 7| ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ |
+// 8| ♖ | ♘ | ♗ | ♕ | ♔ | ♗ | ♘ | ♖ |
+// 7| ♙ | ♙ | ♙ | ♙ | ♙ | ♙ | ♙ | ♙ |
 // 6|   |   |   |   |   |   |   |   |
 // 5|   |   |   |   |   |   |   |   |
 // 4|   |   |   |   |   |   |   |   |
 // 3|   |   |   |   |   |   |   |   |
-// 2| ♙ | ♙ | ♙ | ♙ | ♙ | ♙ | ♙ | ♙ |
-// 1| ♖ | ♘ | ♗ | ♕ | ♔ | ♗ | ♘ | ♖ |
+// 2| ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ |
+// 1| ♜ | ♞ | ♝ | ♛ | ♚ | ♝ | ♞ | ♜ |
 //    a   b   c   d   e   f   g   h 
 // "#;
 // 
