@@ -13,6 +13,7 @@ use crate::engine::lookup::Lookup;
 
 pub mod eval;
 pub mod lookup;
+pub mod utils;
 
 
 pub struct Engine {

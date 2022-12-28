@@ -1,4 +1,6 @@
 use chess::{Board, BoardStatus, ChessMove, Color, Piece};
+use crate::engine::utils;
+
 
 const CHECKMATE_EVAL: i16 = 10000;
 
