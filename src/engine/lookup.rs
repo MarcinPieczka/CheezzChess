@@ -1,7 +1,8 @@
 use crate::engine::eval::eval;
-use chess::{Board, ChessMove, Color, MoveGen, Piece, Square};
+use chess::{Board, ChessMove, Color, MoveGen, Piece, Square, CacheTable};
 use log::info;
 use vampirc_uci::UciMessage;
+use std::{collections::{HashSet, HashMap}, os::unix::process::parent_id};
 
 #[derive(Debug, PartialEq)]
 pub struct Position {
@@ -12,24 +13,13 @@ pub struct Position {
     last_move: ChessMove,
     eval: Option<i16>,
     depth: u8,
-    parent: u32,
+    parent: u64,
     best_next: Option<u32>,
 }
 
-// let const A = r#"
-// 8| ♜ | ♞ | ♝ | ♛ | ♚ | ♝ | ♞ | ♜ |
-// 7| ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ |
-// 6|   |   |   |   |   |   |   |   |
-// 5|   |   |   |   |   |   |   |   |
-// 4|   |   |   |   |   |   |   |   |
-// 3|   |   |   |   |   |   |   |   |
-// 2| ♙ | ♙ | ♙ | ♙ | ♙ | ♙ | ♙ | ♙ |
-// 1| ♖ | ♘ | ♗ | ♕ | ♔ | ♗ | ♘ | ♖ |
-//    a   b   c   d   e   f   g   h
-// "#;
 
 impl Position {
-    pub fn new(last_move: Option<ChessMove>, depth: u8, parent: u32) -> Position {
+    pub fn new(last_move: Option<ChessMove>, depth: u8, parent: u64) -> Position {
         match last_move {
             Some(mv) => Position {
                 last_move: mv,
@@ -53,6 +43,7 @@ pub struct Lookup {
     positions: Vec<Position>,
     color: Color,
     board: Board,
+    cache: HashMap<u64, Vec<u32>>
 }
 
 impl Lookup {
@@ -62,6 +53,7 @@ impl Lookup {
             positions: vec![Position::new(None, 0, 0)],
             color: board.side_to_move(),
             board: board.clone(),
+            cache: HashMap::new()
         }
     }
 
@@ -80,11 +72,20 @@ impl Lookup {
             {
                 let parent = &self.positions[i];
                 let parent_board = self.get_board(parent);
+                let parent_hash = parent_board.get_hash();
 
-                children = MoveGen::new_legal(&parent_board)
-                    .filter(|mv| parent_board.legal(*mv))
-                    .map(|mv| Position::new(Some(mv), self.positions[i].depth + 1, i as u32))
-                    .collect();
+                if self.cache.contains_key(&parent_hash) {
+                    self.cache.entry(parent_hash)
+                    .and_modify(|parents| parents.push(i as u32));
+                    children = vec![];
+                } else {
+                    self.cache.insert(parent_hash, vec![i as u32]);
+                    children = MoveGen::new_legal(&parent_board)
+                        .filter(|mv| parent_board.legal(*mv))
+                        .map(|mv| Position::new(Some(mv), self.positions[i].depth + 1, parent_hash))
+                        .collect();
+                    }
+
             }
             self.positions.extend(children);
 
@@ -93,21 +94,19 @@ impl Lookup {
                 break;
             }
         }
-        info!("number of positions after search: {}", self.positions.len());
+        info!("number of positions after search: {}, of which unique: {}", 
+        self.positions.len(), self.cache.len());
     }
 
     pub fn all_moves(&self, position: &Position) -> Vec<ChessMove> {
         let mut moves = vec![];
-        if position.depth == 0 {
-            return moves;
-        }
         let mut parent = position.clone();
         loop {
-            moves.push(parent.last_move);
-            if parent.parent == 0 {
+            if parent.depth == 0 {
                 break;
             }
-            parent = &self.positions[parent.parent as usize];
+            moves.push(parent.last_move);
+            parent = &self.positions[self.cache.get(&parent.parent).unwrap()[0] as usize];
         }
         moves.reverse();
         moves
@@ -124,42 +123,34 @@ impl Lookup {
     pub fn min_max(&mut self) {
         info!("Starting min max with {} positions", self.positions.len());
         for i in (1..(self.positions.len())).rev() {
-            let parent_i = self.positions[i].parent as usize;
-
             if self.positions[i].eval.is_none() {
                 self.positions[i].eval = Some(self.eval_position(&self.positions[i]));
             }
-
-            match self.positions[parent_i].eval {
-                None => {
-                    self.positions[parent_i].eval = self.positions[i].eval;
-                    self.positions[parent_i].best_next = Some(i as u32);
+            for parent_i_32 in self.cache.get(&self.positions[i].parent).unwrap().iter() {
+                let parent_i = parent_i_32.clone() as usize;
+                match self.positions[parent_i].eval {
+                    None => {
+                        self.positions[parent_i].eval = self.positions[i].eval;
+                        self.positions[parent_i].best_next = Some(i as u32);
+                    }
+                    Some(parent_eval) => match (self.positions[i].depth % 2, self.color) {
+                        (1, Color::White) | (0, Color::Black) => {
+                            if self.positions[i].eval.unwrap() > parent_eval {
+                                self.positions[parent_i].eval = self.positions[i].eval;
+                                self.positions[parent_i].best_next = Some(i as u32);
+                            }
+                        }
+                        (0, Color::White) | (1, Color::Black) => {
+                            if self.positions[i].eval.unwrap() < parent_eval {
+                                self.positions[parent_i].eval = self.positions[i].eval;
+                                self.positions[parent_i].best_next = Some(i as u32);
+                            }
+                        }
+                        _ => {
+                            panic!()
+                        }
+                    },
                 }
-                Some(parent_eval) => match (self.positions[i].depth % 2, self.color) {
-                    (1, Color::White) | (0, Color::Black) => {
-                        if self.positions[i].eval.unwrap() > parent_eval {
-                            self.positions[parent_i].eval = self.positions[i].eval;
-                            self.positions[parent_i].best_next = Some(i as u32);
-                        }
-                    }
-                    (0, Color::White) | (1, Color::Black) => {
-                        if self.positions[i].eval.unwrap() < parent_eval {
-                            self.positions[parent_i].eval = self.positions[i].eval;
-                            self.positions[parent_i].best_next = Some(i as u32);
-                        }
-                    }
-                    _ => {
-                        panic!()
-                    }
-                },
-            }
-
-            if i == self.positions.len() - 1 {
-                info!(
-                    "Child eval: {:?}, Parent eval: {:?}, Depth: {}",
-                    self.positions[i].eval, self.positions[parent_i].eval, self.positions[i].depth
-                );
-                show_board(self.get_board(&self.positions[i]));
             }
         }
     }
@@ -193,30 +184,30 @@ impl Lookup {
             "Best move: {} has eval: {:?}, next moves:",
             best.last_move, best.eval
         );
-        let mut parent = &self.positions[best.best_next.unwrap() as usize];
-        loop {
-            info!("{}", parent.last_move);
-            match parent.best_next {
-                Some(next_i) => {
-                    parent = &self.positions[next_i as usize];
-                }
-                None => {
-                    break;
-                }
-            }
-        }
-        for position in self.positions.iter() {
-            if position.depth > 2 {
-                break;
-            }
-            if position.depth < 2 {
-                continue;
-            }
-            if position.depth < 2 {
-                continue;
-            }
-            info!("Move: {} has eval: {:?}", position.last_move, position.eval);
-        }
+        // let mut parent = &self.positions[best.best_next.unwrap() as usize];
+        // loop {
+        //     info!("{}", parent.last_move);
+        //     match parent.best_next {
+        //         Some(next_i) => {
+        //             parent = &self.positions[next_i as usize];
+        //         }
+        //         None => {
+        //             break;
+        //         }
+        //     }
+        // }
+        // for position in self.positions.iter() {
+        //     if position.depth > 2 {
+        //         break;
+        //     }
+        //     if position.depth < 2 {
+        //         continue;
+        //     }
+        //     if position.depth < 2 {
+        //         continue;
+        //     }
+        //     info!("Move: {} has eval: {:?}", position.last_move, position.eval);
+        // }
     }
 }
 

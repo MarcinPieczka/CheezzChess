@@ -1,0 +1,420 @@
+[Event "Tournament_2"]
+[Site "dead-ThinkPad-T420"]
+[Date "2022.12.28"]
+[Round "1"]
+[White "LocoChess Release"]
+[Black "Gaviota 1.0 64 bit"]
+[Result "0-1"]
+[BlackElo "2200"]
+[ECO "B50"]
+[Opening "Sicilian"]
+[Time "13:40:24"]
+[Variation "2.Nf3 d6 3.Nc3"]
+[WhiteElo "2200"]
+[TimeControl "60+4"]
+[Termination "normal"]
+[PlyCount "36"]
+[WhiteType "program"]
+[BlackType "program"]
+
+1. e4 c5 2. Nc3 d6 3. Nf3 a6 4. a4 Nf6 {(Ng8-f6 d2-d4 c5xd4 Nf3xd4 Nb8-c6
+Bf1-c4 Qd8-a5) -0.51/16 4} 5. b3 g6 {(g7-g6 Bc1-b2 Bf8-g7 Nc3-d5 O-O
+Nd5xf6+ Bg7xf6 Bb2xf6 e7xf6 Bf1-c4 f6-f5 d2-d3 Nb8-c6 Bc4-d5 Bc8-e6)
+-0.13/15 5} 6. d3 Bg7 {(Bf8-g7 Bc1-b2 Nb8-c6 h2-h3) +0.36/15 4} 7. Qd2 d5
+{(d6-d5 e4xd5 Nf6xd5 Bc1-b2 Nb8-c6 O-O-O Nd5xc3 Bb2xc3 Nc6-d4 Kc1-b2 Bc8-g4
+Qd2-f4 Bg4xf3 g2xf3 O-O h2-h4) +0.48/15 4} 8. Qg5 Nxe4 {(Nf6xe4 Nc3xe4
+d5xe4 Nf3-e5 Qd8-d4 Ne5xf7 O-O Ra1-b1 Rf8xf7 Bc1-e3 Qd4-c3+ Ke1-d1 Nb8-c6
+Be3-d2 Qc3-e5 Qg5-h4 Qe5-d4) +4.33/16 4} 9. Nxe4 dxe4 {(d5xe4 Nf3-e5
+Qd8-d4) +4.54/15 4} 10. Ra3 exf3 {(e4xf3 g2xf3 Qd8-a5+ Ke1-d1 Nb8-c6 h2-h4
+h7-h5 Qg5-g3) +5.59/14 4} 11. Qxc5 Nc6 {(Nb8-c6 Bc1-e3 Nc6-d4 Ra3-a2)
++6.20/14 8} 12. gxf3 Bf5 {(Bc8-f5 Qc5-e3 Ra8-c8 c2-c4 Nc6-b4 Qe3-d2 Qd8-d6
+h2-h4 O-O Bf1-e2 Nb4xd3+ Be2xd3 Bf5xd3 b3-b4 Qd6-e6+ Qd2-e3 Qe6xc4 Ra3xd3
+Qc4xc1+ Rd3-d1) +6.40/15 5} 13. Ke2 Nd4+ {(Nc6-d4+ Ke2-d1 Ra8-c8 Qc5-c4
+Rc8xc4 b3xc4 Qd8-b6 Ra3-a2 Nd4xf3 Bf1-e2 Qb6-b1 Be2xf3 Qb1xa2 Bf3xb7 Qa2xa4
+c4-c5) +13.88/15 10} 14. Ke3 Rc8 {(Ra8-c8 Qc5xc8 Qd8xc8 c2-c4 Qc8-c6 Ke3-d2
+Nd4xf3+ Kd2-d1 Nf3-d4 Rh1-g1 Qc6-f3+ Kd1-e1 Nd4-c2+ Ke1-d2 Qf3xf2+ Bf1-e2
+Nc2xa3 Rg1-g5 Na3-b1+ Kd2-d1 Qf2xh2) +22.40/13 4} 15. Qxc8 Qxc8 {(Qd8xc8
+c2-c4 Qc8-c6 Ke3-d2 Qc6xf3 Ra3-a2 Qf3xf2+ Kd2-d1 Bf5-g4+ Bf1-e2 Bg4xe2+
+Kd1-d2 Be2-g4+ Kd2-c3 Nd4-b5+ Kc3-b4) +M9/14 12} 16. Ra2 Qe6+ 17. Kf4 Qe5+
+18. Kg5 Nxf3# 0-1
+
+[Event "Tournament_2"]
+[Site "dead-ThinkPad-T420"]
+[Date "2022.12.28"]
+[Round "2"]
+[White "Gaviota 1.0 64 bit"]
+[Black "LocoChess Release"]
+[Result "1-0"]
+[BlackElo "2200"]
+[ECO "D48"]
+[Opening "Semi-Slav"]
+[Time "13:42:32"]
+[Variation "Meran, Pirc Variation"]
+[WhiteElo "2200"]
+[TimeControl "60+4"]
+[Termination "normal"]
+[PlyCount "43"]
+[WhiteType "program"]
+[BlackType "program"]
+
+1. d4 d5 2. c4 c6 3. Nf3 Nf6 4. Nc3 e6 5. e3 Nbd7 6. Bd3 dxc4 7. Bxc4 b5 8.
+Bd3 a6 9. e4 b4 10. Na4 {(Nc3-a4 c6-c5 e4-e5 Nf6-d5 d4xc5 Bf8xc5 Bc1-g5
+Bc5-e7 Bg5xe7 Qd8xe7 O-O Bc8-b7 Ra1-c1 O-O Rc1-c4 h7-h6) +0.32/16 5} b3 11.
+Qxb3 {(Qd1xb3 c6-c5 O-O c5xd4 Bc1-f4 Nf6-g4 Ra1-c1 e6-e5 Bf4-g5 Bf8-e7
+Bg5xe7 Qd8xe7 h2-h3 Ra8-b8 Qb3-d5) +1.44/14 5} Ke7 12. O-O {(O-O Qd8-c7
+g2-g3 Ke7-e8 Bc1-f4 Qc7-b7 Qb3-c2 h7-h6) +2.76/14 5} a5 13. Bf4 {(Bc1-f4
+Nf6-h5 Bf4-g5+ f7-f6 Bg5-d2 g7-g5 e4-e5 Nh5-f4 Bd2xf4 g5xf4 Ra1-c1 Ra8-b8
+e5xf6+ Ke7xf6 Qb3-c2 Nd7-b6 Na4xb6 Qd8xb6 Bd3xh7 Qb6xb2) +3.04/14 5} Ng8
+14. Rac1 {(Ra1-c1 Ra8-a7) +5.80/13 6} c5 15. dxc5 {(d4xc5 g7-g5 Nf3xg5
+h7-h6 Qb3-c3 Ng8-f6 c5-c6 Nd7-c5 c6-c7 Qd8xd3 Qc3xc5+ Ke7-e8 Qc5-c6+ Qd3-d7
+Qc6xa8 h6xg5 Bf4xg5) +6.80/13 5} e5 16. c6 {(c5-c6) +9.60/14 4} exf4 17. c7
+{(c6-c7) +14.51/15 5} Qe8 18. Qa3+ {(Qb3-a3+) +16.47/17 5} Nc5 19. Qxc5+
+{(Qa3xc5+ Ke7-f6 e4-e5+) +M4/9 0} Kf6 20. e5+ Ke6 21. Nd4+ Kd7 22. Nb6# 1-0
+
+[Event "Tournament_2"]
+[Site "dead-ThinkPad-T420"]
+[Date "2022.12.28"]
+[Round "3"]
+[White "LocoChess Release"]
+[Black "Gaviota 1.0 64 bit"]
+[Result "0-1"]
+[BlackElo "2200"]
+[ECO "C90"]
+[Opening "Spanish"]
+[Time "13:44:09"]
+[Variation "Closed, 8...d6 9.a4 Bg4"]
+[WhiteElo "2200"]
+[TimeControl "60+4"]
+[Termination "normal"]
+[PlyCount "54"]
+[WhiteType "program"]
+[BlackType "program"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 d6 8.
+c3 O-O 9. a4 Bg4 10. d3 Na5 {(Nc6-a5 Bb3-c2 c7-c5) +0.04/15 5} 11. axb5
+Bxf3 {(Bg4xf3 g2xf3 a6xb5 Bb3-c2 c7-c5) +0.35/18 8} 12. gxf3 axb5 {(a6xb5
+Bb3-c2 Nf6-h5 b2-b4 Na5-c6 Ra1xa8 Qd8xa8 Nb1-a3 Qa8-a6 Bc2-b3 Nh5-f4 Bc1xf4
+e5xf4 Na3-c2 Nc6-e5 d3-d4 Ne5-c4 Bb3xc4 b5xc4) +0.46/17 5} 13. h4 Nh5
+{(Nf6-h5 Bb3-c2 Be7xh4 b2-b4 Na5-c6 Ra1xa8 Qd8xa8 Nb1-a3 Nh5-f4 Bc1xf4
+Qa8xa3 Bf4-d2 Rf8-a8 Qd1-e2 Qa3-a7) +1.32/15 5} 14. d4 Bxh4 {(Be7xh4
+Bb3-c2) +1.97/14 5} 15. c4 Bxf2+ {(Bh4xf2+ Kg1xf2 Qd8-h4+ Kf2-e3 Na5xb3
+Ra1xa8 e5xd4+ Ke3-d3 Rf8xa8 c4xb5 Ra8-a1 Kd3-c2 Nb3xc1 Qd1xc1 Nh5-f4
+Qc1-d2) +5.60/15 4} 16. Kf1 Bxe1 {(Bf2xe1 Bb3-a2 b5xc4 Nb1-a3) +10.19/14 5}
+17. Kxe1 Nxb3 {(Na5xb3 Ra1xa8 Qd8-h4+ Ke1-e2 Qh4-h2+ Ke2-d3 Nb3xc1+ Qd1xc1
+Nh5-f4+ Qc1xf4 Qh2xf4 Ra8xf8+ Kg8xf8 Nb1-d2 b5xc4+ Nd2xc4 Qf4xf3+ Nc4-e3
+d6-d5 d4xe5 Qf3xe4+ Kd3-e2 Qe4xe5) +14.91/15 4} 18. Rxa8 Qh4+ {(Qd8-h4+
+Ke1-e2 Qh4-h2+ Ke2-d3 Nb3xc1+ Qd1xc1 Nh5-f4+ Qc1xf4 Qh2xf4 Ra8xf8+ Kg8xf8
+Kd3-c2 e5xd4 c4xb5 Qf4xf3 Nb1-d2 Qf3-e2 b5-b6 c7xb6) +15.23/15 4} 19. Kf1
+Qh1+ {(Qh4-h1+) +21.25/14 4} 20. Ke2 Ng3+ {(Nh5-g3+ Ke2-f2 Qh1xd1 Ra8xf8+
+Kg8xf8 Nb1-c3) +26.78/14 13} 21. Kf2 Qxd1 {(Qh1xd1 Ra8xf8+ Kg8xf8 Nb1-c3)
++26.78/15 8} 22. Rxf8+ Kxf8 23. dxe5 Nxc1 {(Nb3xc1 Nb1-c3 Nc1-d3+ Kf2-g2
+Qd1-h1+ Kg2xg3 Qh1-g1+ Kg3-h4 Nd3-f4 e5xd6 g7-g5+) +M6/13 2} 24. Kxg3 Qg1+
+{(Qd1-g1+ Kg3-h4 Nc1-e2 e5xd6 Qg1-g3+ Kh4-h5 Ne2-f4+) +M4/9 0} 25. Kh4 Ne2
+26. Kh5 Nf4+ 27. Kh4 g5# 0-1
+
+[Event "Tournament_2"]
+[Site "dead-ThinkPad-T420"]
+[Date "2022.12.28"]
+[Round "4"]
+[White "Gaviota 1.0 64 bit"]
+[Black "LocoChess Release"]
+[Result "1-0"]
+[BlackElo "2200"]
+[ECO "D43"]
+[Opening "Semi-Slav"]
+[Time "13:46:33"]
+[Variation "Moscow, 7.e3 Nd7 8.Bd3 dxc4"]
+[WhiteElo "2200"]
+[TimeControl "60+4"]
+[Termination "normal"]
+[PlyCount "49"]
+[WhiteType "program"]
+[BlackType "program"]
+
+1. d4 Nf6 2. c4 e6 3. Nf3 d5 4. Nc3 c6 5. Bg5 h6 6. Bxf6 Qxf6 7. e3 Nd7 8.
+Bd3 dxc4 9. Bxc4 Bb4 10. a3 {(a2-a3 Bb4-a5 O-O Ba5-c7 Nc3-e4 Qf6-e7 Qd1-c2
+O-O b2-b4 Nd7-b6 Bc4-e2 e6-e5 d4xe5 Bc7xe5 Nf3xe5 Qe7xe5 Ne4-c5) +0.41/15
+5} Bf8 11. O-O {(O-O Qf6-d8 b2-b4 Bf8-e7 Qd1-c2 O-O Bc4-e2 Qd8-c7 h2-h4
+a7-a5 b4-b5 e6-e5 Rf1-d1 e5xd4 Rd1xd4 Nd7-b6) +0.46/15 5} Kd8 12. Ne4
+{(Nc3-e4 Qf6-e7 b2-b4) +1.24/14 6} Qe7 13. b4 {(b2-b4 Qe7-e8 Nf3-e5 Kd8-c7
+Qd1-h5 g7-g6 Qh5-f3 Nd7xe5 d4xe5 a7-a5 Ne4-f6 Qe8-e7 b4-b5) +1.36/13 5} c5
+14. dxc5 {(d4xc5 Kd8-c7 Qd1-d4 e6-e5 Qd4-b2 Kc7-b8 Rf1-d1 a7-a6 Ra1-c1
+Kb8-a7 Ne4-d6 e5-e4 Nd6xf7 Rh8-g8) +3.63/14 5} e5 15. Nd6 {(Ne4-d6 Kd8-c7
+Nd6xf7 Rh8-h7 Nf7-d6 g7-g5 Bc4-d3 Rh7-h8 Bd3-f5 Bf8-g7 Ra1-b1 e5-e4 Nf3-d4
+Kc7-b8 Bf5xe4) +4.66/14 5} e4 16. Nxf7+ {(Nd6xf7+ Kd8-c7 Nf3-d2 Nd7-e5
+Nf7xh8 g7-g6 Bc4-d5 Bf8-g7 Nd2xe4 Bg7xh8 Ne4-d6 Ne5-c6 Ra1-b1 a7-a6 Qd1-d3)
++6.08/16 5} Kc7 17. Nd2 {(Nf3-d2 Nd7-e5 Nf7xh8 g7-g6 Bc4-d5 Bf8-g7 Nh8xg6
+Ne5xg6 Ra1-c1 Bc8-d7 Nd2xe4 Bd7-b5 Ne4-d6 Bb5xf1) +6.18/16 5} Rh7 18. Qg4
+{(Qd1-g4 Nd7-e5 Qg4-g3 h6-h5 Nd2xe4 h5-h4 Qg3xe5+ Qe7xe5 Nf7xe5 Bc8-f5
+Ne4-g5 Rh7-h5 f2-f4 Bf8-e7 e3-e4 Be7xg5 f4xg5 Bf5-d7 Ne5xd7 Kc7xd7)
++8.19/16 4} b5 19. Qg3+ {(Qg4-g3+ Nd7-e5 Nf7xe5 Qe7-g5 Nd2xe4 Qg5xg3 f2xg3
+b5xc4 Rf1-f7+ Kc7-d8 Rf7xf8+ Kd8-e7 Ne5-g6+ Ke7-d7 Ra1-d1+ Kd7-c7 Rf8-f7+
+Kc7-b8 Rd1-d8) +10.29/13 4} Ne5 20. Nxe5 {(Nf7xe5 Qe7-g5 Nd2xe4 Qg5xg3
+f2xg3 g7-g5 Rf1xf8 Bc8-b7 Rf8xa8 Bb7xa8 Ne4-f6 Rh7-e7 Bc4-d5 Re7xe5 Bd5xa8
+Re5xe3) +11.57/15 7} Qg5 21. Bd5 {(Bc4-d5 Bf8-e7 Bd5xa8 Qg5xg3 h2xg3 Be7-f6
+Ba8xe4 Rh7-h8 f2-f4 g7-g5) +14.70/15 9} Qxg3 22. fxg3 {(f2xg3) +16.33/17 4}
+Bb7 23. Rf7+ {(Rf1-f7+ Kc7-c8 c5-c6 Bb7-a6 Bd5-e6+ Kc8-b8 c6-c7+ Kb8-b7
+c7-c8Q+ Kb7-b6 Qc8-c6+) +M6/13 0} Kd8 24. Rd7+ Ke8 25. Bf7# 1-0
+
+[Event "Tournament_2"]
+[Site "dead-ThinkPad-T420"]
+[Date "2022.12.28"]
+[Round "5"]
+[White "LocoChess Release"]
+[Black "Gaviota 1.0 64 bit"]
+[Result "0-1"]
+[BlackElo "2200"]
+[ECO "A13"]
+[Opening "English"]
+[Time "13:48:47"]
+[Variation "1...e6 2.Nc3 d5"]
+[WhiteElo "2200"]
+[TimeControl "60+4"]
+[Termination "normal"]
+[PlyCount "40"]
+[WhiteType "program"]
+[BlackType "program"]
+
+1. c4 e6 2. Nc3 d5 3. cxd5 exd5 {(e6xd5 Ng1-f3 Nb8-c6 d2-d4 Bc8-f5 Bc1-f4
+Ng8-f6 e2-e3 Nf6-e4 Nc3xe4 Bf5xe4 a2-a3 Bf8-d6 Bf4xd6 Qd8xd6 Nf3-g5)
++0.05/15 4} 4. a4 d4 {(d5-d4 Nc3-a2 c7-c5 Ng1-f3 Nb8-c6 b2-b3 Ng8-f6
+Qd1-c2) +1.03/15 4} 5. Ne4 Nc6 {(Nb8-c6 d2-d3 f7-f5 Ne4-g3 Bf8-b4+ Bc1-d2
+a7-a5 Bd2xb4 a5xb4 Ng1-f3 Ng8-f6 Qd1-b3 Rh8-f8) +1.04/15 4} 6. b4 Bxb4
+{(Bf8xb4 Ng1-f3 Qd8-d5 Ne4-g3 Ng8-f6 Bc1-b2 O-O Qd1-b1 a7-a6 Qb1-d3 Rf8-e8
+Bb2xd4 Bc8-g4) +1.66/15 4} 7. e3 Qd5 {(Qd8-d5 Ne4-g3 d4xe3 f2xe3 Qd5-e5
+Ra1-a3 Bc8-e6) +1.99/14 5} 8. Ng3 dxe3 {(d4xe3 f2xe3 Qd5-e5 Ra1-a3 Qe5-e7
+Bc1-b2 Ng8-f6 Ra3-d3 O-O Ng1-f3 Bc8-e6 Bb2-c3 Bb4-d6 Nf3-g5) +2.02/14 5} 9.
+fxe3 Nf6 {(Ng8-f6 Bf1-e2) +2.26/14 11} 10. Bb5 Qxg2 {(Qd5xg2 Qd1-f3 Bc8-h3
+Bb5-e2 Qg2xf3 Be2xf3 Bh3-e6 Bf3xc6+ b7xc6 Bc1-b2 Ra8-d8 Bb2-d4 Be6-b3
+Ng1-f3) +2.55/14 4} 11. h3 Qxg3+ {(Qg2xg3+ Ke1-f1 Nf6-e4 Qd1-f3 Qg3xf3+
+Ng1xf3 Ne4-g3+ Kf1-g2 Ng3xh1 Bc1-b2 Bc8-e6 Ra1xh1 f7-f6 Bb2-d4 Be6-d5
+Rh1-b1) +8.42/14 5} 12. Kf1 Ne4 {(Nf6-e4 Qd1-f3 Qg3xf3+ Ng1xf3 Ne4-g3+
+Kf1-g2 Ng3xh1 Bc1-b2 Bc8-e6 Kg2xh1 f7-f6 Ra1-g1 O-O d2-d3 Bb4-d6 Bb5-c4
+Be6xc4 d3xc4) +8.43/16 8} 13. Qe2 O-O {(O-O Qe2-f3) +9.02/13 5} 14. Rb1 Qg6
+{(Qg3-g6) +12.79/15 4} 15. Ke1 Ng3 {(Ne4-g3 Bb5-d3 Qg6-d6 Qe2-g2 Qd6xd3
+Rb1xb4 Nc6xb4 Qg2xg3 Qd3-c4 Bc1-a3 Nb4-c2+ Ke1-f2 Nc2xa3 Ng1-e2 Rf8-e8
+Ne2-d4) +13.22/16 10} 16. Qd3 Bf5 {(Bc8-f5) +17.45/16 3} 17. e4 Bxe4
+{(Bf5xe4 Qd3-e3 Be4xb1 Ng1-e2 Ng3xh1 Qe3-f3 Qg6-e4 Qf3xe4 Bb1xe4 Bc1-b2
+Rf8-e8 Ke1-f1 Ra8-d8 d2-d4) +22.32/14 4} 18. Qd7 Nxh1 {(Ng3xh1) +23.43/15
+8} 19. Rxb4 Qxg1+ 20. Ke2 Ng3# 0-1
+
+[Event "Tournament_2"]
+[Site "dead-ThinkPad-T420"]
+[Date "2022.12.28"]
+[Round "6"]
+[White "Gaviota 1.0 64 bit"]
+[Black "LocoChess Release"]
+[Result "1-0"]
+[BlackElo "2200"]
+[ECO "E16"]
+[Opening "Queen's Indian"]
+[Time "13:51:26"]
+[Variation "Capablanca, Nimzowitsch, 7.O-O Bxd2 8.Qxd2"]
+[WhiteElo "2200"]
+[TimeControl "60+4"]
+[Termination "normal"]
+[PlyCount "63"]
+[WhiteType "program"]
+[BlackType "program"]
+
+1. d4 Nf6 2. c4 e6 3. Nf3 b6 4. g3 Bb7 5. Bg2 Bb4+ 6. Bd2 Qe7 7. O-O Bxd2
+8. Qxd2 O-O 9. Nc3 d5 10. cxd5 {(c4xd5 Nf6xd5 Nc3xd5 e6xd5 b2-b4 Nb8-d7
+b4-b5 Nd7-f6 Nf3-e5 Nf6-e4 Qd2-c2 h7-h6 Ra1-c1 Ra8-c8) +0.49/14 5} exd5 11.
+Nh4 {(Nf3-h4 g7-g6 Qd2-g5 Nb8-c6 Nh4-f5 Qe7-d8 Nf5-h6+ Kg8-g7 Rf1-d1 Nf6-e4
+Qg5-f4 Ne4xc3 b2xc3 Bb7-a6 Nh6-g4 Ba6xe2) +0.51/14 5} Qe8 12. Nf5 {(Nh4-f5
+Qe8-d8 Qd2-g5 g7-g6 b2-b4 Rf8-e8 b4-b5 Nf6-e4 Nc3xe4 d5xe4 Nf5-h6+ Kg8-g7
+Qg5-f4 f7-f5 Ra1-c1) +1.00/14 5} Qd7 13. Qg5 {(Qd2-g5 g7-g6 Qg5xf6 Qd7xf5
+Qf6xf5 g6xf5 Nc3xd5 Bb7xd5 Bg2xd5 c7-c6 Bd5-f3 Rf8-d8 e2-e3 a7-a5 Ra1-c1
+Rd8-d6 Rc1-c4) +2.17/17 5} Ne8 14. Nxd5 {(Nc3xd5 Bb7xd5 Nf5-e7+ Kg8-h8
+Qg5xd5 Qd7xd5 Bg2xd5 c7-c6 Bd5-f3 Ne8-c7 Ra1-c1 Rf8-d8 Ne7xc6 Nb8xc6 Rc1xc6
+Nc7-e6 e2-e3 Ra8-c8 Rf1-c1 Rc8xc6 Rc1xc6) +2.91/18 5} Bxd5 15. Ne7+
+{(Nf5-e7+ Kg8-h8 Qg5xd5 Qd7xd5 Bg2xd5 c7-c6 Bd5-g2 f7-f5 Rf1-c1 Rf8-f7
+Ne7xc6 Nb8xc6 Rc1xc6 Ra8-d8 e2-e3 g7-g5 Ra1-c1 Ne8-f6 Rc6-c7) +3.04/18 3}
+Qxe7 16. Qxe7 {(Qg5xe7 Bd5xg2 Kg1xg2 Nb8-a6 e2-e4 Ne8-f6 Ra1-c1) +6.52/18
+5} Nc6 17. Qxf8+ {(Qe7xf8+ Kg8xf8 Bg2xd5 Ra8-d8 Bd5xc6 Rd8xd4 Rf1-d1 Rd4-c4
+Ra1-c1 Rc4xc1 Rd1xc1 Ne8-d6 Rc1-d1 Kf8-e7 Kg1-g2 Ke7-f6 Rd1-d5 Kf6-e6 h2-h4
+a7-a5) +8.22/20 5} Kxf8 18. Bxd5 {(Bg2xd5 Ra8-d8 Bd5xc6 Ne8-f6) +8.28/19 5}
+f6 19. Bxc6 {(Bd5xc6 Ra8-d8 Ra1-c1 Ne8-d6 e2-e4 a7-a6) +8.80/17 5} Rd8 20.
+Rac1 {(Ra1-c1 Ne8-d6 e2-e4 Kf8-e7) +8.87/17 5} g5 21. Bxe8 {(Bc6xe8 Kf8xe8
+Rc1xc7 Rd8xd4 Rc7xa7 Rd4-d2 Rf1-c1 Ke8-d8 Rc1-c6 Rd2xb2 Rc6xf6 Kd8-e8
+Rf6-h6 Rb2xe2 Rh6xb6 Re2-e7 Ra7xe7+ Ke8xe7 Rb6-b7+ Ke7-f6 Rb7xh7) +10.69/19
+5} Kxe8 22. Rxc7 {(Rc1xc7) +11.08/18 5} Rd7 23. Rfc1 {(Rf1-c1 Ke8-d8
+Rc7-c8+ Kd8-e7 Rc1-c6 h7-h5 Rc8-c7 f6-f5 Rc7xd7+ Ke7xd7 Rc6-f6 f5-f4 Kg1-g2
+f4xg3 Kg2xg3 a7-a5 Rf6-g6 g5-g4 Rg6xb6) +11.94/17 5} Kd8 24. Rc8+ {(Rc7-c8+
+Kd8-e7 Rc1-c6 f6-f5 Rc8-h8 h7-h5 Rh8-h7+ Ke7-d8 Rh7xd7+ Kd8xd7 Rc6-f6
+f5-f4) +12.16/17 5} Ke7 25. R1c6 {(Rc1-c6 f6-f5 Rc8-h8 h7-h5 Rh8-h7+ Ke7-d8
+Rh7xd7+ Kd8xd7 Rc6-f6) +12.39/18 4} Rxd4 26. R8c7+ {(Rc8-c7+ Rd4-d7 Rc7xd7+
+Ke7xd7 Rc6xf6 h7-h5 Rf6-f7+ Kd7-e6 Rf7xa7 h5-h4 g3xh4 g5xh4 Ra7-b7 Ke6-d5
+Rb7xb6 Kd5-c5 Rb6-h6) +12.75/17 4} Ke8 27. Rxh7 {(Rc7xh7 Ke8-d8 Rh7xa7
+Rd4-d1+ Kg1-g2 Rd1-d7 Ra7xd7+ Kd8xd7 Rc6xf6 Kd7-c7 Rf6-g6 g5-g4 Rg6xg4
+Kc7-b7 h2-h4 Kb7-c6 Rg4-g6+ Kc6-d5) +14.63/17 5} Rd1+ 28. Kg2 a6 29. Rc8+
+{(Rc6-c8+ Rd1-d8 Rc8-c7 Rd8-d7 Rc7xd7 g5-g4 Rd7-b7 Ke8-f8 Rh7-h8+) +M5/11
+0} Rd8 30. Rcc7 {(Rc8-c7 Rd8-d7 Rc7xd7) +M4/9 0} Rd7 31. Rcxd7 Kf8 32. Rh8#
+1-0
+
+[Event "Tournament_2"]
+[Site "dead-ThinkPad-T420"]
+[Date "2022.12.28"]
+[Round "7"]
+[White "LocoChess Release"]
+[Black "Gaviota 1.0 64 bit"]
+[Result "0-1"]
+[BlackElo "2200"]
+[ECO "D37"]
+[Opening "QGD"]
+[Time "13:54:09"]
+[Variation "Classical, 5...O-O 6.e3 Nbd7"]
+[WhiteElo "2200"]
+[TimeControl "60+4"]
+[Termination "normal"]
+[PlyCount "48"]
+[WhiteType "program"]
+[BlackType "program"]
+
+1. Nf3 Nf6 2. c4 e6 3. d4 d5 4. Nc3 Be7 5. Bf4 O-O 6. e3 Nbd7 7. a3 c5 8.
+b3 Qa5 {(Qd8-a5 Qd1-d2 c5xd4 e3xd4 Be7-b4 a3xb4 Qa5xa1+ Qd2-c1 Qa1xc1+
+Bf4xc1 Nf6-e4 Nc3xe4 d5xe4 Nf3-g5 Nd7-f6 Bf1-e2 h7-h6) +0.83/16 5} 9. b4
+cxb4 {(c5xb4 a3xb4 Qa5xb4 Qd1-d2 d5xc4 Bf4-g5) +1.71/15 0} 10. Qa4 Qxa4
+{(Qa5xa4 Nc3xa4 d5xc4 Bf1xc4 b4xa3 Nf3-d2) +2.57/15 1} 11. Nxa4 dxc4
+{(d5xc4 Bf1xc4 b4xa3 Ra1-c1 a7-a6 Bc4-b3 b7-b5 Na4-c5 Nf6-d5 Bf4-g5 Nd7xc5
+d4xc5 f7-f6 Bg5-f4 Nd5xf4 e3xf4 Bc8-d7) +2.90/16 5} 12. Bxc4 bxa3 {(b4xa3
+Ra1-c1 a7-a6 Bc4-b3 b7-b5 Na4-c5 a6-a5 Bb3-a2) +2.90/14 2} 13. Bg5 a6
+{(a7-a6 Nf3-e5 b7-b5 Bg5xf6 Nd7xf6 Na4-b6 Ra8-b8 Nb6xc8 Rf8xc8 Bc4-d3
+Rc8-c3 Ke1-d2 b5-b4 Rh1-c1 Rc3xc1 Ra1xc1 b4-b3 Ne5-c6) +3.43/17 5} 14. g3
+b5 {(b7-b5 O-O b5xa4 Nf3-e5 Be7-b4 Rf1-b1 a6-a5 Ne5-c6 Bc8-a6 Bc4xa6 Ra8xa6
+Nc6xb4 a5xb4 Rb1xb4 Nf6-d5 Rb4-b5) +5.69/16 5} 15. h3 Bb4+ {(Be7-b4+ Ke1-e2
+b5xc4 Rh1-c1 a6-a5 Bg5xf6 g7xf6 Nf3-d2 Bc8-a6 Nd2-b1 c4-c3+ Ke2-f3 Ba6-b7+
+Kf3-e2 a3-a2 Nb1xc3 Bb7-a6+) +6.81/15 5} 16. Kd1 Ne4 {(Nf6-e4 Kd1-e2 b5xc4
+Bg5-f4 c4-c3 Rh1-c1 a6-a5 Nf3-e1 Bc8-a6+ Ne1-d3 g7-g5 Bf4-c7 Rf8-c8 f2-f3
+Rc8xc7 f3xe4) +8.60/15 5} 17. g4 Nxf2+ {(Ne4xf2+ Kd1-e2 Nf2xh1 Bc4-d3 b5xa4
+Ra1xh1 Bb4-c3 Bd3-e4) +10.82/17 6} 18. Kc2 Nxh1 {(Nf2xh1) +11.88/16 5} 19.
+Kb3 Bb7 {(Bc8-b7 Kb3xb4 Bb7xf3 Bc4-b3 b5xa4 Kb4xa4 Nh1-f2 Ka4xa3 Nf2xh3
+Bg5-e7 Rf8-c8 Be7-b4 a6-a5 Bb4-d2 Bf3xg4) +12.48/15 7} 20. d5 a5 {(a6-a5)
++15.14/14 4} 21. Rxh1 Rac8 {(Ra8-c8 d5xe6 b5xc4+ Kb3-a2 f7xe6 Bg5-f4)
++17.11/14 4} 22. Bxb5 Bxd5+ {(Bb7xd5+ Bb5-c4 Rc8xc4 Na4-b6 Rc4-c3+ Kb3-a4
+Bd5-c6+) +M4/13 0} 23. Bc4 Rxc4 24. Ka2 Rc1# 0-1
+
+[Event "Tournament_2"]
+[Site "dead-ThinkPad-T420"]
+[Date "2022.12.28"]
+[Round "8"]
+[White "Gaviota 1.0 64 bit"]
+[Black "LocoChess Release"]
+[Result "1-0"]
+[BlackElo "2200"]
+[ECO "C42"]
+[Opening "Russian Game"]
+[Time "13:56:19"]
+[Variation "Classical, Jänisch Variation"]
+[WhiteElo "2200"]
+[TimeControl "60+4"]
+[Termination "normal"]
+[PlyCount "49"]
+[WhiteType "program"]
+[BlackType "program"]
+
+1. e4 e5 2. Nf3 Nf6 3. Nxe5 d6 4. Nf3 Nxe4 5. d4 d5 6. Bd3 Nc6 7. O-O Be7
+8. c4 Nb4 9. Be2 Qd7 10. Ne5 {(Nf3-e5 Qd7-d8 f2-f3 Ne4-f6 c4-c5 O-O Qd1-a4
+Nb4-c6 Ne5xc6 b7xc6 Qa4xc6 Ra8-b8 Nb1-c3 Bc8-d7) +0.96/14 5} Qd8 11. Bf3
+{(Be2-f3 O-O Nb1-c3 c7-c5 d4xc5 Bc8-f5 Nc3xd5 Be7xc5 Nd5xb4 Bc5xb4 Bc1-e3
+Qd8-c7 a2-a3 Bb4-a5) +1.07/14 5} Nxf2 12. Rxf2 {(Rf1xf2 O-O a2-a3 Nb4-c6
+Ne5xc6 b7xc6 Nb1-c3 Bc8-e6 Bc1-f4 Ra8-b8 c4xd5 c6xd5 b2-b4 Rf8-e8) +3.05/15
+5} O-O 13. a3 {(a2-a3 Nb4-c6 Ne5xc6 b7xc6 Nb1-c3 Bc8-e6 Rf2-e2 Ra8-b8 c4xd5
+c6xd5 Nc3xd5 Be7-d6 b2-b4 Qd8-h4 h2-h3 c7-c6) +3.05/16 5} dxc4 14. axb4
+{(a3xb4 Be7-h4 Rf2-e2 c7-c6 d4-d5 Bh4-e7 Nb1-c3 c6xd5 Nc3xd5 Be7xb4 Bc1-e3
+Bb4-d6 Ne5xc4 Bd6-b8) +5.84/14 5} Kh8 15. Bh5 {(Bf3-h5 Bc8-e6 Bh5xf7 Be7-d6
+Bf7xe6 Rf8xf2 Qd1-g4 Bd6xe5 d4xe5 Qd8-f8 Qg4xc4 a7-a6) +6.89/17 15} Be6 16.
+Nc3 {(Nb1-c3 Be7-f6 Nc3-e4 Bf6xe5 d4xe5 Qd8-e7 Ne4-g5 g7-g6 Ng5xe6 f7xe6
+Rf2xf8+ Ra8xf8 Bh5-f3 Qe7xb4 Bc1-h6 Rf8-e8) +6.85/16 18} Kg8 17. d5 {(d4-d5
+f7-f6 d5xe6 Qd8xd1+ Bh5xd1 f6xe5 Nc3-d5 Be7-d6 Bc1-g5 Rf8xf2 Kg1xf2 c7-c6
+Nd5-e3 Ra8-f8+ Kf2-e2 b7-b5 Ra1xa7 Bd6xb4) +8.51/16 4} Kh8 18. dxe6 {(d5xe6
+Qd8xd1+ Nc3xd1 f7xe6 Rf2xf8+ Be7xf8 Bc1-d2 a7-a6 b4-b5 Bf8-d6 Ne5xc4 Bd6-e7
+Bh5-f3 Ra8-d8 b5xa6 b7xa6 Ra1xa6 Be7-c5+ Bd2-e3) +11.85/16 4} Kg8 19. Bxf7+
+{(Bh5xf7+ Rf8xf7 e6xf7+ Kg8-h8 Qd1xd8+ Ra8xd8 Bc1-g5 Be7-f6 Rf2xf6 Rd8-f8
+Ne5-d7 Rf8xf7 Rf6xf7 h7-h6 Bg5-e3 c7-c5 b4xc5 a7-a6) +29.11/15 11} Rxf7 20.
+exf7+ {(e6xf7+) +29.67/16 4} Kf8 21. Nd7+ {(Ne5-d7+ Qd8xd7 Qd1xd7) +M9/12
+4} Qxd7 22. Qxd7 {(Qd1xd7 Ra8-d8 Qd7xe7+) +M8/15 4} a5 23. Nd5 {(Nc3-d5
+Be7-c5 Nd5xc7 Bc5xf2+ Kg1xf2 a5xb4 Ra1xa8+) +M4/10 0} Bd6 24. Bg5 Re8 25.
+fxe8=Q# 1-0
+
+[Event "Tournament_2"]
+[Site "dead-ThinkPad-T420"]
+[Date "2022.12.28"]
+[Round "9"]
+[White "LocoChess Release"]
+[Black "Gaviota 1.0 64 bit"]
+[Result "0-1"]
+[BlackElo "2200"]
+[ECO "C90"]
+[Opening "Spanish"]
+[Time "13:58:51"]
+[Variation "Closed, 8...d6 9.a4 Bg4"]
+[WhiteElo "2200"]
+[TimeControl "60+4"]
+[Termination "normal"]
+[PlyCount "54"]
+[WhiteType "program"]
+[BlackType "program"]
+
+1. e4 e5 2. Nf3 Nc6 3. Bb5 a6 4. Ba4 Nf6 5. O-O Be7 6. Re1 b5 7. Bb3 d6 8.
+c3 O-O 9. a4 Bg4 10. d3 Na5 {(Nc6-a5 Bb3-c2 c7-c5) +0.04/15 5} 11. axb5
+Bxf3 {(Bg4xf3 g2xf3 a6xb5 Bb3-a2 Nf6-h5 Bc1-e3 Be7-h4 Nb1-d2 Qd8-f6 b2-b4
+Na5-c6 Qd1-c2 Nc6-e7 Ba2-b3 Ra8xa1 Re1xa1 Nh5-f4 Be3xf4 Qf6xf4) +0.42/17 5}
+12. gxf3 axb5 {(a6xb5 Bb3-a2 Nf6-h5) +0.42/15 5} 13. h4 Nh5 {(Nf6-h5 Bb3-c2
+Be7xh4 b2-b4 Na5-c6 Ra1xa8 Qd8xa8 Nb1-a3 Qa8-a6 Bc2-b3 Nh5-f4 Bc1xf4 e5xf4
+Na3-c2 Nc6-e5) +1.58/16 5} 14. d4 Bxh4 {(Be7xh4 Bb3-d5 c7-c6 b2-b4 c6xd5
+b4xa5 Ra8xa5 Ra1xa5 Qd8xa5 d4xe5 Qa5-a2 Bc1-e3 d6xe5 Qd1xd5) +1.50/14 5}
+15. c4 Bxf2+ {(Bh4xf2+ Kg1xf2 Qd8-h4+ Kf2-e3 Na5xb3 Ra1xa8 e5xd4+ Ke3-d3
+Rf8xa8 c4xb5 Ra8-a1 Kd3-c2 Nb3xc1 Qd1xc1 Nh5-f4 Qc1-d2) +5.60/15 5} 16. Kf1
+Bxe1 {(Bf2xe1 Qd1xe1 Na5xb3 Ra1xa8 Qd8xa8 d4xe5 Qa8-a1 Bc1-g5 d6xe5 Bg5-e7
+Rf8-e8 Be7-a3 Nb3-d4 Kf1-f2 b5xc4) +10.37/14 5} 17. Kxe1 Nxb3 {(Na5xb3)
++15.10/16 5} 18. Rxa8 Qh4+ {(Qd8-h4+ Ke1-e2 Qh4-h2+ Ke2-d3 Nb3xc1+ Qd1xc1
+Nh5-f4+ Qc1xf4 Qh2xf4 Ra8xf8+ Kg8xf8 Kd3-c2 e5xd4 c4xb5 Qf4xf3 Nb1-d2
+Qf3-e2 b5-b6 c7xb6) +15.23/15 5} 19. Kf1 Qh1+ {(Qh4-h1+) +21.14/14 5} 20.
+Ke2 Ng3+ {(Nh5-g3+) +23.24/14 4} 21. Kf2 Qxd1 {(Qh1xd1 Ra8xf8+ Kg8xf8
+Bc1-e3 e5xd4 Kf2xg3 d4xe3 Nb1-c3 Qd1-g1+ Kg3-h3 Qg1-f1+ Kh3-g3 Qf1-f2+
+Kg3-h3 Qf2xf3+ Kh3-h4 e3-e2 Nc3xe2 Qf3xe4+ Kh4-g3 Qe4-e3+ Kg3-h4 Qe3xe2
+c4xb5 Qe2xb5) +25.11/14 6} 22. Rxf8+ Kxf8 23. dxe5 Nxc1 {(Nb3xc1 Nb1-d2
+Nc1-d3+ Kf2-e3 Qd1-e2+ Ke3-d4 Qe2xd2 e5xd6 c7xd6 c4xb5 Nd3xb2+) +M6/13 2}
+24. Kxg3 Qg1+ {(Qd1-g1+ Kg3-h4 Nc1-e2 e5xd6 Qg1-g3+ Kh4-h5 Ne2-f4+) +M4/9
+0} 25. Kh4 Ne2 26. Kh5 Nf4+ 27. Kh4 g5# 0-1
+
+[Event "Tournament_2"]
+[Site "dead-ThinkPad-T420"]
+[Date "2022.12.28"]
+[Round "10"]
+[White "Gaviota 1.0 64 bit"]
+[Black "LocoChess Release"]
+[Result "1-0"]
+[BlackElo "2200"]
+[ECO "C18"]
+[Opening "French"]
+[Time "14:01:03"]
+[Variation "Winawer, 6...Qc7 7.Qg4 f5"]
+[WhiteElo "2200"]
+[TimeControl "60+4"]
+[Termination "normal"]
+[PlyCount "45"]
+[WhiteType "program"]
+[BlackType "program"]
+
+1. e4 e6 2. d4 d5 3. Nc3 Bb4 4. e5 c5 5. a3 Bxc3+ 6. bxc3 Qc7 7. Qg4 f5 8.
+Qh5+ g6 9. Qd1 cxd4 10. cxd4 {(c3xd4 h7-h6 h2-h4 Ng8-e7 Ng1-f3 b7-b6
+Bf1-b5+ Bc8-d7 Bb5-d3 Nb8-c6 O-O Nc6-a5 Bd3-a6 b6-b5 Ra1-b1 Qc7-c4)
++0.73/15 5} Qc3+ 11. Bd2 {(Bc1-d2 Qc3xd4 Ng1-f3 Qd4-b6 Bf1-d3 Qb6-c7 O-O
+Nb8-c6 Qd1-e2 h7-h6 h2-h4 Ng8-e7 Ra1-b1 Bc8-d7 Rb1-b5) +0.87/15 0} Qxd4 12.
+Nf3 {(Ng1-f3 Qd4-b6 Bf1-d3 Ng8-e7 Ra1-b1 Qb6-c7 O-O Nb8-d7 Rf1-e1 Ne7-c6
+Bd2-h6 Nd7-c5 Bd3-b5 a7-a6 Bb5-f1) +0.90/15 5} Qb6 13. Be2 {(Bf1-e2 Nb8-c6
+O-O h7-h6 Bd2-e3 Qb6-a5 h2-h4 Qa5-c7 Be3-f4 Ng8-e7 Qd1-d2 Bc8-d7 Ra1-b1)
++0.88/15 5} d4 14. Rb1 {(Ra1-b1 Qb6-d8 Bd2-b4 Nb8-c6 O-O Ng8-e7 Bb4-d6
+Ne7-d5 Nf3xd4 Nd5-c3 Nd4xc6 b7xc6 Qd1-d2 Nc3xb1) +1.61/15 5} Qd8 15. Bb4
+{(Bd2-b4 Nb8-c6 Bb4-d6 Ng8-f6 O-O Nf6-d5 Nf3xd4 Nd5-c3 Nd4xc6 b7xc6 Qd1-d2
+Nc3xb1 Rf1xb1 Ke8-f7 Be2-c4 a7-a5) +1.56/16 6} d3 16. Bxd3 {(Be2xd3 Nb8-c6
+O-O Nc6xb4 Rb1xb4 Ng8-e7 Bd3-b5+ Ne7-c6 Rb4-d4 Qd8-c7 Bb5xc6+ b7xc6 Rd4-d6
+O-O Nf3-d4 Rf8-d8) +1.91/17 5} f4 17. Bd6 {(Bb4-d6 Nb8-c6 Qd1-d2 Ng8-e7 O-O
+O-O Rf1-d1 b7-b6 c2-c3 h7-h6 Bd3-e4 Bc8-b7 Rb1-b5) +2.87/13 5} g5 18. Nd4
+{(Nf3-d4 Ng8-h6 Qd1-h5+ Nh6-f7 O-O a7-a6 Bd3-c4) +4.74/11 5} f3 19. Qxf3
+{(Qd1xf3 Ng8-f6 Rb1xb7 Bc8xb7 Qf3xb7 Nb8-d7 e5xf6 Qd8-c8) +9.44/13 5} Qa5+
+20. Kd1 {(Ke1-d1) +19.09/16 5} Kd8 21. Qf8+ {(Qf3-f8+ Kd8-d7 Bd3-c4 Qa5-d5
+Bc4xd5 e6xd5 e5-e6+) +M4/10 0} Kd7 22. Bc4 Qd8 23. Bxe6# 1-0
+

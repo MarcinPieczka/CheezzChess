@@ -1,21 +1,10 @@
 
 TODO:
 - write such tests that proove that it's working, for instance:
-8 	♜ 	♞ 	♝ 	♛ 	♚ 	♝ 	♞ 	♜
-7 	♟︎ 	♟︎ 	♟︎ 	♟︎ 	♟︎ 	♟︎ 	♟︎ 	♟︎
-6 	
-							
-5 	
-							
-4 	
-							
-3 	
-							
-2 	♙ 	♙ 	♙ 	♙ 	♙ 	♙ 	♙ 	♙
-1 	♖ 	♘ 	♗ 	♕ 	♔ 	♗ 	♘ 	♖
-	a 	b 	c 	d 	e 	f 	g 	h 
+
 
 IDEAS:
+- ab pruning
 - memory usage as command line argument
 - add cache of board hashes that maps Board-Hash <-> [Parents]
 - neural network evaluator that has bitbords of {Color, Piece} on input
