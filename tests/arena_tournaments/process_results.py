@@ -23,6 +23,7 @@ with open(args.file_path) as f:
             current[match.group(1)] = match.group(2)
         elif current:
             results.append(current)
+            current = None
             
 avg_game_length = sum(int(res["PlyCount"]) for res in results) / (len(results) * 2)
 print(f"Average game length: {avg_game_length}")

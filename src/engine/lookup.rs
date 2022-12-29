@@ -43,7 +43,8 @@ pub struct Lookup {
     positions: Vec<Position>,
     color: Color,
     board: Board,
-    cache: HashMap<u64, Vec<u32>>
+    cache: HashMap<u64, Vec<u32>>,
+    cachable: u64,
 }
 
 impl Lookup {
@@ -53,17 +54,18 @@ impl Lookup {
             positions: vec![Position::new(None, 0, 0)],
             color: board.side_to_move(),
             board: board.clone(),
-            cache: HashMap::new()
+            cache: HashMap::new(),
+            cachable: 0,
         }
     }
 
     pub fn run(&mut self, max_nodes: usize) {
-        self.find_positions(max_nodes);
+        self.find_positions(max_nodes, 4);
         self.min_max();
         self.best_move();
     }
 
-    pub fn find_positions(&mut self, max_nodes: usize) {
+    pub fn find_positions(&mut self, max_nodes: usize, max_depth: u8) {
         let mut i: usize = 0;
         info!("Looking for up to {:?} nodes", max_nodes);
         info!("Start position eval: {:?}", eval(&self.board, vec![]));
@@ -71,9 +73,15 @@ impl Lookup {
             let children: Vec<Position>;
             {
                 let parent = &self.positions[i];
+                if parent.depth == max_depth {
+                    info!("Reached max depth: {}", parent.depth);
+                    children = vec![];
+                    break;
+                }
+
                 let parent_board = self.get_board(parent);
                 let parent_hash = parent_board.get_hash();
-
+                self.cachable += 1;
                 if self.cache.contains_key(&parent_hash) {
                     self.cache.entry(parent_hash)
                     .and_modify(|parents| parents.push(i as u32));
@@ -94,8 +102,8 @@ impl Lookup {
                 break;
             }
         }
-        info!("number of positions after search: {}, of which unique: {}", 
-        self.positions.len(), self.cache.len());
+        info!("number of positions after search: {}, cachable: {} cached: {}", 
+        self.positions.len(), self.cachable, self.cache.len());
     }
 
     pub fn all_moves(&self, position: &Position) -> Vec<ChessMove> {
@@ -155,6 +163,52 @@ impl Lookup {
         }
     }
 
+    pub fn opti_min_max(&mut self) {
+        info!("Starting min max with {} positions", self.positions.len());
+        let mut best_eval: Option<i16> = None;
+        let mut best_next: Option<u32> = None;
+        let mut current_parent: Option<u64> = None;
+        for i in (1..(self.positions.len())).rev() {
+            if self.positions[i].eval.is_none() {
+                self.positions[i].eval = Some(self.eval_position(&self.positions[i]));
+            }
+            if current_parent.is_some() && current_parent != Some(self.positions[i - 1].parent) {
+                for parent_i_32 in self.cache.get(&self.positions[i].parent).unwrap().iter() {
+                    let parent_i = parent_i_32.clone() as usize;
+                    self.positions[parent_i].eval = best_eval;
+                    self.positions[parent_i].best_next = best_next;
+                    best_eval = None;
+                    best_next = None;
+                    current_parent = None;
+                }
+            } else {
+                current_parent = Some(self.positions[i].parent);
+                if best_eval.is_none() {
+                    best_eval = self.positions[i].eval;
+                    best_next = Some(i as u32);
+                } else {
+                    match (self.positions[i].depth % 2, self.color) {
+                        (1, Color::White) | (0, Color::Black) => {
+                            if self.positions[i].eval.unwrap() > best_eval.unwrap() {
+                                best_eval = self.positions[i].eval;
+                                best_next = Some(i as u32);
+                            }
+                        }
+                        (0, Color::White) | (1, Color::Black) => {
+                            if self.positions[i].eval.unwrap() < best_eval.unwrap() {
+                                best_eval = self.positions[i].eval;
+                                best_next = Some(i as u32);
+                            }
+                        }
+                        _ => {
+                            panic!()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     pub fn eval_position(&self, position: &Position) -> i16 {
         eval(&self.board, self.all_moves(position))
     }
@@ -184,30 +238,18 @@ impl Lookup {
             "Best move: {} has eval: {:?}, next moves:",
             best.last_move, best.eval
         );
-        // let mut parent = &self.positions[best.best_next.unwrap() as usize];
-        // loop {
-        //     info!("{}", parent.last_move);
-        //     match parent.best_next {
-        //         Some(next_i) => {
-        //             parent = &self.positions[next_i as usize];
-        //         }
-        //         None => {
-        //             break;
-        //         }
-        //     }
-        // }
-        // for position in self.positions.iter() {
-        //     if position.depth > 2 {
-        //         break;
-        //     }
-        //     if position.depth < 2 {
-        //         continue;
-        //     }
-        //     if position.depth < 2 {
-        //         continue;
-        //     }
-        //     info!("Move: {} has eval: {:?}", position.last_move, position.eval);
-        // }
+        let mut parent = &self.positions[best.best_next.unwrap() as usize];
+        loop {
+            info!("move: {}, depth: {}", parent.last_move, parent.depth);
+            match parent.best_next {
+                Some(next_i) => {
+                    parent = &self.positions[next_i as usize];
+                }
+                None => {
+                    break;
+                }
+            }
+        }
     }
 }
 
@@ -239,7 +281,7 @@ mod tests {
         let board = Game::new().current_position();
         let mut lookup = Lookup::new(&board);
         println!("{:?}", board.side_to_move());
-        lookup.find_positions(5);
+        lookup.find_positions(5, 6);
         let expected_move = unsafe { ChessMove::new(Square::new(8), Square::new(16), None) };
         println!("{:?}", lookup.positions);
         assert_eq!(

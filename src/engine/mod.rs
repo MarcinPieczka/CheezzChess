@@ -117,7 +117,7 @@ impl Engine {
                 // sleep(move_time);
                 let mut finder = Lookup::new(&self.board.unwrap());
                 //finder.run(100000);
-                finder.run(20000000);
+                finder.run(100000000);
             }
             _ => {}
         }
