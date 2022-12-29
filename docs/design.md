@@ -13,10 +13,10 @@ but depending on a configuration, we will sacrifise let's say 50 centipawns to j
 
 ### Needs to support
 - Calculations need to happen on all cores (number of threads == number of cpu's perfectly)
-- The work done when calculating next move should build upon
-work done previously
+- (Maybe later) The work done when calculating next move should build upon
+work done on previous moves.
 - At any point the best move should be possible to be returned
-- Engine should by default calculate during oponent time
+- (Maybe later) Engine should by default calculate during oponent time
 
 
 ### Evaluator
@@ -38,6 +38,15 @@ this is not a priority
 2. Create e.g 2 (the number may vary) levels of (distinct) moves which would become roots of a forest.
    These roots will establish a queue of work to be done, and would specify the depth to which it
    should be processed.
-3. Spawn as many threads as there are roots, each thread would look at one root.
+3. Spawn as many threads as there are cpus, and each thread should take one subroot
+   at a time from the queue and process it.
 4. A/B value for main root should be available and mutable for all threads
-5. When time comes for choosing a move, there will be 
+5. When time comes for choosing a move, the best moves should already be available
+
+
+## Milestones
+1. Single threaded A/B pruned min-max engine that calculates moves up to predefined depth.
+2. Add multithreading.
+3. Use Stockfish NNUE.
+4. Judge the style (Maybe this should be done earlier, as this is main goal of the project).
+5. Deepening the search after initial search to predefined depth.
