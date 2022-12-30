@@ -1,8 +1,11 @@
 use crate::engine::eval::eval;
-use chess::{Board, ChessMove, Color, MoveGen, Piece, Square, CacheTable};
+use chess::{Board, CacheTable, ChessMove, Color, MoveGen, Piece, Square};
 use log::info;
+use std::{
+    collections::{HashMap, HashSet},
+    os::unix::process::parent_id,
+};
 use vampirc_uci::UciMessage;
-use std::{collections::{HashSet, HashMap}, os::unix::process::parent_id};
 
 #[derive(Debug, PartialEq)]
 pub struct Position {
@@ -16,7 +19,6 @@ pub struct Position {
     parent: u64,
     best_next: Option<u32>,
 }
-
 
 impl Position {
     pub fn new(last_move: Option<ChessMove>, depth: u8, parent: u64) -> Position {
@@ -83,8 +85,9 @@ impl Lookup {
                 let parent_hash = parent_board.get_hash();
                 self.cachable += 1;
                 if self.cache.contains_key(&parent_hash) {
-                    self.cache.entry(parent_hash)
-                    .and_modify(|parents| parents.push(i as u32));
+                    self.cache
+                        .entry(parent_hash)
+                        .and_modify(|parents| parents.push(i as u32));
                     children = vec![];
                 } else {
                     self.cache.insert(parent_hash, vec![i as u32]);
@@ -92,8 +95,7 @@ impl Lookup {
                         .filter(|mv| parent_board.legal(*mv))
                         .map(|mv| Position::new(Some(mv), self.positions[i].depth + 1, parent_hash))
                         .collect();
-                    }
-
+                }
             }
             self.positions.extend(children);
 
@@ -102,8 +104,12 @@ impl Lookup {
                 break;
             }
         }
-        info!("number of positions after search: {}, cachable: {} cached: {}", 
-        self.positions.len(), self.cachable, self.cache.len());
+        info!(
+            "number of positions after search: {}, cachable: {} cached: {}",
+            self.positions.len(),
+            self.cachable,
+            self.cache.len()
+        );
     }
 
     pub fn all_moves(&self, position: &Position) -> Vec<ChessMove> {

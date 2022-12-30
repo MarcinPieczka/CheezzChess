@@ -10,9 +10,11 @@ use vampirc_uci::Duration as VampDuration;
 use vampirc_uci::{UciMessage, UciTimeControl};
 
 use crate::engine::lookup::Lookup;
+use crate::engine::search::Search;
 
 pub mod eval;
 pub mod lookup;
+pub mod search;
 pub mod utils;
 
 pub struct Engine {
@@ -118,6 +120,11 @@ impl Engine {
                 let mut finder = Lookup::new(&self.board.unwrap());
                 //finder.run(100000);
                 finder.run(100000000);
+                let search = Search::new(
+                    &self.board.unwrap(),
+                    Color::Black,
+                    MoveGen::new_legal(&self.board.unwrap()).next().unwrap(),
+                );
             }
             _ => {}
         }
