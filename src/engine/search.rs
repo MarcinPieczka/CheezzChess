@@ -82,9 +82,11 @@ impl Search {
                     None => {
                         // Go to parent and set A/B
                         // if you're A or B "winns", then set best_next
+                        // the current will also became the parrent again
                     }
                 }
             } else {
+                // eval all potential next moves and go up to parent
                 // Go to parent and set A/B
                 // if you're A or B "winns", then set best_next
             }
