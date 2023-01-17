@@ -16,6 +16,7 @@ pub mod eval;
 pub mod lookup;
 pub mod search;
 pub mod utils;
+pub mod tree;
 
 pub struct Engine {
     board: Option<Board>,
