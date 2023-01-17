@@ -73,8 +73,8 @@ impl Search {
                         let beta = current.data().beta;
                         let depth = current.data().depth + 1;
 
-                        current.push_back(tr(Position::new(next_move, alpha, beta, depth)));
-                        current = current.back_mut().unwrap().back_mut().unwrap();
+                        //current.push_back(tr(Position::new(next_move, alpha, beta, depth)));
+                        //current = current.back_mut().unwrap().back_mut().unwrap();
 
                         moves.push(next_move);
                     }
