@@ -10,7 +10,7 @@ pub fn board_from_textboard(
 ) -> Board {
     let mut position = BoardBuilder::new();
     let lines = textboard_lines(textboard);
-    for i in (0..8) {
+    for i in 0..8 {
         let rank = 7 - i;
         let pieces: Vec<Option<(Piece, Color)>> = lines[i]
             .split("|")

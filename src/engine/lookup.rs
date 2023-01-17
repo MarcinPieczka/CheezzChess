@@ -1,9 +1,8 @@
 use crate::engine::eval::eval;
-use chess::{Board, CacheTable, ChessMove, Color, MoveGen, Piece, Square};
+use chess::{Board, ChessMove, Color, MoveGen, Piece, Square};
 use log::info;
 use std::{
-    collections::{HashMap, HashSet},
-    os::unix::process::parent_id,
+    collections::{HashMap},
 };
 use vampirc_uci::UciMessage;
 

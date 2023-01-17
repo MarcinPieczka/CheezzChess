@@ -1,8 +1,8 @@
-use crate::engine::eval::eval;
-use chess::{Board, CacheTable, ChessMove, Color, MoveGen, Piece, Square};
+
+use chess::{Board, ChessMove, Color, MoveGen};
 use log::info;
-use trees::{tr, Node, Tree};
-use vampirc_uci::UciMessage;
+use trees::{tr, Tree};
+
 
 pub struct Position {
     chess_move: ChessMove,
@@ -42,7 +42,7 @@ impl Search {
         }
     }
 
-    pub fn run(&mut self, max_depth: u8, alpha: Option<i16>, beta: Option<i16>) {
+    pub fn run(&mut self, max_depth: u8, alpha: Option<i16>, _beta: Option<i16>) {
         let mut root = self.positions.root_mut();
         root.data_mut().alpha = alpha.unwrap_or(root.data_mut().alpha);
         root.data_mut().beta = alpha.unwrap_or(root.data_mut().beta);
@@ -69,9 +69,9 @@ impl Search {
                     }
                     Some(potential_moves) => {
                         let next_move = potential_moves.pop().unwrap();
-                        let alpha = current.data().alpha;
-                        let beta = current.data().beta;
-                        let depth = current.data().depth + 1;
+                        let _alpha = current.data().alpha;
+                        let _beta = current.data().beta;
+                        let _depth = current.data().depth + 1;
 
                         //current.push_back(tr(Position::new(next_move, alpha, beta, depth)));
                         //current = current.back_mut().unwrap().back_mut().unwrap();

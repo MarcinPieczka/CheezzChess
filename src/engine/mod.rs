@@ -120,7 +120,7 @@ impl Engine {
                 let mut finder = Lookup::new(&self.board.unwrap());
                 //finder.run(100000);
                 finder.run(100000000);
-                let search = Search::new(
+                let _search = Search::new(
                     &self.board.unwrap(),
                     Color::Black,
                     MoveGen::new_legal(&self.board.unwrap()).next().unwrap(),
