@@ -60,32 +60,7 @@ impl Search {
                     self.tree.current.borrow_mut().data.potential_next_moves = Some(legal_moves);
                 }
                 let next_move = self.tree.current.borrow_mut().data.potential_next_moves.as_mut().unwrap().pop();
-                // match &mut Rc::clone(&self.tree.current).borrow_mut().data.potential_next_moves {
-                //     Some(potential_moves) if potential_moves == &[] => {
-                //         if self.tree.has_no_child() {}
-                //         // There are no more moves either because we used them all
-                //         // or there vere none to begin with.
-                //         //
-                //         // If there are children, then the a/b are set correctly
-                //         // and we can move up with the a/b
-                //         //
-                //         // If there were no potential moves, then we have to evaluate this position
-                //     }
-                //     Some(potential_moves) => {
-                //         let next_move = potential_moves.pop().unwrap();
-                //         let alpha = self.tree.current.borrow().data.alpha;
-                //         let beta = self.tree.current.borrow().data.beta;
-                //         let depth = self.tree.current.borrow().data.depth + 1;
 
-                //         self.tree.add_child(Position::new(Some(next_move), alpha, beta, depth));
-                //         self.tree.goto_last_child();
-
-                //         moves.push(next_move);
-                //     }
-                //     None => {
-                //         panic!("this field should have been initialized already")
-                //     }
-                                //         let next_move = potential_moves.pop().unwrap();
                 match next_move {
                     Some(mv) => {
                         let alpha = self.tree.current.borrow().data.alpha;
@@ -98,7 +73,9 @@ impl Search {
                         moves.push(mv); 
                     },
                     None => {
-                        if self.tree.has_no_child() {}
+                        if self.tree.has_no_child() {
+                            self.tree.goto_parent()
+                        }
                         // There are no more moves either because we used them all
                         // or there vere none to begin with.
                         //
@@ -131,6 +108,6 @@ mod tests {
         let board = Game::new().current_position();
         let mut search = Search::new(&board, Color::White);
         println!("{:?}", board.side_to_move());
-        search.run(4, None, None);
+        search.run(3, None, None);
     }
 }
