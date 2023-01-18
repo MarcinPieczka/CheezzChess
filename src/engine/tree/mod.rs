@@ -2,8 +2,9 @@ use std::rc::{Weak, Rc};
 use std::cell::RefCell;
 
 
+#[derive(Debug)]
 pub struct Node<T> {
-    data: T,
+    pub data: T,
     children: Vec<Rc<RefCell<Node<T>>>>,
     parent: Option<Weak<RefCell<Node<T>>>>,
 }
@@ -17,7 +18,7 @@ impl<T> Node<T> {
         return Node{
             data: data,
             children: vec![],
-            parent: None,
+            parent: parent,
         }
     }
 
@@ -27,8 +28,8 @@ impl<T> Node<T> {
 }
 
 pub struct Tree<T> {
-    root: Rc<RefCell<Node<T>>>,
-    current: Rc<RefCell<Node<T>>>,
+    pub root: Rc<RefCell<Node<T>>>,
+    pub current: Rc<RefCell<Node<T>>>,
 }
 
 impl<T> Tree<T> {
@@ -52,8 +53,17 @@ impl<T> Tree<T> {
         self.current.borrow_mut().add_child(child);
     }
 
+    pub fn has_no_child(&self) -> bool {
+        self.current.borrow().children.is_empty()
+    }
+
     pub fn goto_child(&mut self, i: usize) {
         self.current = Rc::clone(&Rc::clone(&self.current).borrow().children[i]);
+    }
+
+    pub fn goto_last_child(&mut self) {
+        let last_child_i = self.current.borrow().children.len() - 1;
+        self.current = Rc::clone(&Rc::clone(&self.current).borrow().children[last_child_i]);
     }
 
     pub fn goto_parent(&mut self) {
@@ -85,12 +95,30 @@ mod tests {
     fn test_adding_children_and_going_back() {
         let mut tree = Tree::<u8>::new(0);
         for i in 1..5 {
-            tree.add_child(i);
-            println!("{}", tree.current.borrow().data);
+            let child_val = i + tree.current.borrow().data;
+            tree.add_child(i + child_val);
+            println!("data of current: {}", tree.current.borrow().data);
+            println!("parent of current: {:?}", tree.current.borrow().parent);
             tree.goto_child(0);
         }
-        tree.goto_parent();
-        for i in 1..4 {
+        for _ in 1..5 {
+            println!("data of current: {}", tree.current.borrow().data);
+            tree.goto_parent();
+        }
+    }
+
+    #[test]
+    fn test_adding_children_and_going_back_2() {
+        let mut tree = Tree::<u8>::new(0);
+        for i in 1..5 {
+            let child_val = i + tree.current.borrow().data;
+            tree.add_child(i + child_val);
+            println!("data of current: {}", tree.current.borrow().data);
+            println!("parent of current: {:?}", tree.current.borrow().parent);
+            tree.goto_last_child();
+        }
+        for _ in 1..5 {
+            println!("data of current: {}", tree.current.borrow().data);
             tree.goto_parent();
         }
     }

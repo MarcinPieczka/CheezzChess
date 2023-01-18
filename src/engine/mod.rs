@@ -118,14 +118,15 @@ impl Engine {
                 info!("UciMessage::Go {:?}", time_control);
                 let _move_time = calculate_time(time_control, self.board.unwrap().side_to_move());
                 // sleep(move_time);
-                let mut finder = Lookup::new(&self.board.unwrap());
+                //let mut finder = Lookup::new(&self.board.unwrap());
                 //finder.run(100000);
-                finder.run(100000000);
-                let _search = Search::new(
+                //finder.run(100000000);
+                let mut search = Search::new(
                     &self.board.unwrap(),
                     Color::Black,
                     MoveGen::new_legal(&self.board.unwrap()).next().unwrap(),
                 );
+                search.run(4, None, None);
             }
             _ => {}
         }

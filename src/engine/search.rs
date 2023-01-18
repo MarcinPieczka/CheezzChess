@@ -1,7 +1,8 @@
 
 use chess::{Board, ChessMove, Color, MoveGen};
 use log::info;
-use trees::{tr, Tree};
+use super::tree::Tree;
+use std::rc::{Weak, Rc};
 
 
 pub struct Position {
@@ -25,7 +26,7 @@ impl Position {
 }
 
 pub struct Search {
-    positions: Tree<Position>,
+    tree: Tree<Position>,
     color: Color,
     board: Board,
     chess_move: ChessMove,
@@ -35,30 +36,29 @@ impl Search {
     pub fn new(board: &Board, color: Color, chess_move: ChessMove) -> Search {
         info!("Creating Search with color {:?}", board.side_to_move());
         Search {
-            positions: tr(Position::new(chess_move, i16::MIN, i16::MAX, 0)),
+            tree: Tree::new(Position::new(chess_move, i16::MIN, i16::MAX, 0)),
             color: color,
             board: board.clone(),
             chess_move: chess_move,
         }
     }
 
-    pub fn run(&mut self, max_depth: u8, alpha: Option<i16>, _beta: Option<i16>) {
-        let mut root = self.positions.root_mut();
-        root.data_mut().alpha = alpha.unwrap_or(root.data_mut().alpha);
-        root.data_mut().beta = alpha.unwrap_or(root.data_mut().beta);
+    pub fn run(&mut self, max_depth: u8, alpha: Option<i16>, beta: Option<i16>) {
+        self.tree.root.borrow_mut().data.alpha = alpha.unwrap_or(self.tree.root.borrow().data.alpha);
+        self.tree.root.borrow_mut().data.beta = beta.unwrap_or(self.tree.root.borrow().data.beta);
 
-        let mut moves = vec![root.data().chess_move];
-        let mut current = self.positions.root_mut();
+
+        let mut moves = vec![ self.tree.root.borrow().data.chess_move];
         loop {
-            if current.data().depth < max_depth {
-                if current.data().potential_next_moves.is_none() {
+            if self.tree.current.borrow().data.depth < max_depth {
+                if self.tree.current.borrow().data.potential_next_moves.is_none() {
                     let board = board_from_moves(self.board.clone(), &moves);
                     let legal_moves = MoveGen::new_legal(&board).collect();
-                    current.data_mut().potential_next_moves = Some(legal_moves);
+                    self.tree.current.borrow_mut().data.potential_next_moves = Some(legal_moves);
                 }
-                match &mut current.data_mut().potential_next_moves {
+                match &mut Rc::clone(&self.tree.current).borrow_mut().data.potential_next_moves {
                     Some(potential_moves) if potential_moves == &[] => {
-                        if current.has_no_child() {}
+                        if self.tree.has_no_child() {}
                         // There are no more moves either because we used them all
                         // or there vere none to begin with.
                         //
@@ -69,12 +69,12 @@ impl Search {
                     }
                     Some(potential_moves) => {
                         let next_move = potential_moves.pop().unwrap();
-                        let _alpha = current.data().alpha;
-                        let _beta = current.data().beta;
-                        let _depth = current.data().depth + 1;
+                        let alpha = self.tree.current.borrow().data.alpha;
+                        let beta = self.tree.current.borrow().data.beta;
+                        let depth = self.tree.current.borrow().data.depth + 1;
 
-                        //current.push_back(tr(Position::new(next_move, alpha, beta, depth)));
-                        //current = current.back_mut().unwrap().back_mut().unwrap();
+                        self.tree.add_child(Position::new(next_move, alpha, beta, depth));
+                        self.tree.goto_last_child();
 
                         moves.push(next_move);
                     }
