@@ -124,7 +124,6 @@ impl Engine {
                 let mut search = Search::new(
                     &self.board.unwrap(),
                     Color::Black,
-                    MoveGen::new_legal(&self.board.unwrap()).next().unwrap(),
                 );
                 search.run(4, None, None);
             }

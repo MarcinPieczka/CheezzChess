@@ -27,6 +27,7 @@ impl<T> Node<T> {
     }
 }
 
+#[derive(Debug)]
 pub struct Tree<T> {
     pub root: Rc<RefCell<Node<T>>>,
     pub current: Rc<RefCell<Node<T>>>,
