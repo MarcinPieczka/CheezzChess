@@ -111,6 +111,7 @@ mod tests {
             Color::White,
         );
         assert_eq!(eval(&board, &vec![]), 100);
+        assert_eq!(eval_with_children(&board, &vec![]), (100, 100));
     }
 
     #[test]
@@ -134,6 +135,7 @@ mod tests {
         );
         assert_eq!(board.status(), BoardStatus::Stalemate);
         assert_eq!(eval(&board, &vec![]), 0);
+        assert_eq!(eval_with_children(&board, &vec![]), (0, 0));
     }
 
     #[test]
@@ -157,5 +159,27 @@ mod tests {
         );
         assert_eq!(board.status(), BoardStatus::Checkmate);
         assert_eq!(eval(&board, &vec![]), CHECKMATE_EVAL);
+        assert_eq!(eval_with_children(&board, &vec![]), (CHECKMATE_EVAL, CHECKMATE_EVAL));
+    }
+
+    fn test_getting_right_min_and_max() {
+        let textboard = r#"
+        8|   |   |   |   | ♔ |   |   |   |
+        7|   |   |   |   | ♙ |   |   |   |
+        6|   |   |   |   |   |   |   |   |
+        5|   |   |   |   |   |   |   |   |
+        4|   |   |   |   |   |   |   |   |
+        3|   |   |   |   |   |   | ♙ |   |
+        2|   |   |   |   | ♟︎ | ♟︎ |   |   |
+        1|   |   |   |   | ♚ |   |   |   |
+        a   b   c   d   e   f   g   h 
+        "#;
+        let board = board_from_textboard(
+            textboard,
+            CastleRights::NoRights,
+            CastleRights::NoRights,
+            Color::White,
+        );
+        assert_eq!(eval_with_children(&board, &vec![]), (0, 100));
     }
 }

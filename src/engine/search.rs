@@ -51,6 +51,10 @@ impl Search {
             Some(val) => {self.tree.root.borrow_mut().data.alpha = val;},
             None => {}
         }
+        let mut color_to_move_correction = 0;
+        if self.board.side_to_move() != self.color {
+            color_to_move_correction = 1;
+        }
         let mut i = 0;
         let mut moves = vec![];
         loop {
@@ -105,6 +109,21 @@ impl Search {
                 }
             } else {
                 let (min, max) = eval_with_children(&self.board, &moves);
+                if (self.tree.current.borrow().data.depth + color_to_move_correction) % 2 == 0 {
+                    if !self.move_up(&mut moves) {
+                        // here save alpha to current node (the root node)
+                        break;
+                    } else {
+                        // here save alpha to current node (the root node)
+                    }
+                } else {
+                    if !self.move_up(&mut moves) {
+                        // here save beta to current node (the root node)
+                        break;
+                    } else {
+                        // here save beta to current node (the root node)
+                    }
+                }
                 // Here is main evaluation place
                 // We evaluate all possible moves and get best/worst from there
                 // and save alpha/beta to parent
@@ -161,6 +180,6 @@ mod tests {
         let board = Game::new().current_position();
         let mut search = Search::new(&board, Color::White);
         println!("{:?}", board.side_to_move());
-        search.run(3, None, None);
+        search.run(2, None, None);
     }
 }
