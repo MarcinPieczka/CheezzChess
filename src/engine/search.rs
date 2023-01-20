@@ -45,6 +45,8 @@ impl Search {
     }
 
     pub fn run(&mut self, max_depth: u8, alpha: Option<i16>, beta: Option<i16>) -> ChessMove{
+        let mut number_of_pruned = 0;
+        let mut number_of_evaluated = 0;
         match alpha {
             Some(val) => {
                 self.tree.root.borrow_mut().data.alpha = val;
@@ -59,7 +61,10 @@ impl Search {
         }
         let mut color_to_move_correction = 0;
         if self.board.side_to_move() != self.color {
-            color_to_move_correction = 1;
+            color_to_move_correction += 1;
+        }
+        if self.board.side_to_move() == Color::Black {
+            color_to_move_correction += 1;
         }
         let mut i = 0;
         let mut moves = vec![];
@@ -85,6 +90,13 @@ impl Search {
                     let legal_moves = MoveGen::new_legal(&board).collect();
                     self.tree.current.borrow_mut().data.potential_next_moves = Some(legal_moves);
                 }
+                let alpha = self.tree.current.borrow().data.alpha;
+                let beta = self.tree.current.borrow().data.beta;
+                if alpha > beta{
+                    number_of_pruned += 1;
+                    self.move_up(&mut moves);
+                }
+
                 let next_move = self
                     .tree
                     .current
@@ -110,6 +122,8 @@ impl Search {
                     }
                     None => {
                         //println!("there is no next move");
+                        number_of_evaluated += 1;
+
                         let eval = eval(&self.board, &moves);
                         let child_idx = self.tree.current.borrow().index;
 
@@ -148,6 +162,7 @@ impl Search {
                     }
                 }
             } else {
+                number_of_evaluated += 1;
                 let (min_eval, max_eval) = eval_with_children(&self.board, &moves);
                 let corrected_depth = self.corrected_depth(color_to_move_correction);
                 let child_idx = self.tree.current.borrow().index;
@@ -197,8 +212,9 @@ impl Search {
 
         let next_move_idx = self.tree.current.borrow().data.next_best;
         self.show_board_from_moves(&moves);
-        info!("best crnt: {:?}", self.tree.current.borrow().data.next_best);
-        info!("index crnt: {:?}", self.tree.current.borrow().index);
+        info!("number of pruned: {}", number_of_pruned);
+        info!("number of evaluated: {}", number_of_evaluated);
+
 
         self.tree.goto_child(next_move_idx.unwrap());
         let next_move = self.tree.current.borrow().data.chess_move.unwrap();

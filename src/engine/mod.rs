@@ -123,7 +123,7 @@ impl Engine {
                 //finder.run(100000000);
                 let board = &self.board.unwrap();
                 let mut search = Search::new(&self.board.unwrap(), board.side_to_move());
-                let best_move = search.run(4, None, None);
+                let best_move = search.run(3, None, None);
                 bestmove(best_move, None);
             }
             _ => {}
