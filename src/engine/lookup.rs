@@ -1,9 +1,7 @@
 use crate::engine::eval::eval;
 use chess::{Board, ChessMove, Color, MoveGen, Piece, Square};
 use log::info;
-use std::{
-    collections::{HashMap},
-};
+use std::collections::HashMap;
 use vampirc_uci::UciMessage;
 
 #[derive(Debug, PartialEq)]

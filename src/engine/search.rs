@@ -1,10 +1,10 @@
+use chess::{Board, ChessMove, Color, Game, MoveGen, Piece, Square};
 
-use chess::{Board, ChessMove, Color, MoveGen, Piece, Square, Game};
-
-use log::info;
 use super::tree::Tree;
-use std::rc::{Weak, Rc};
-use crate::engine::eval::eval_with_children;
+use crate::engine::eval::{eval, eval_with_children};
+use log::info;
+use std::cmp::{max, min};
+use std::rc::{Rc, Weak};
 
 pub struct Position {
     chess_move: Option<ChessMove>,
@@ -44,11 +44,15 @@ impl Search {
 
     pub fn run(&mut self, max_depth: u8, alpha: Option<i16>, beta: Option<i16>) {
         match alpha {
-            Some(val) => {self.tree.root.borrow_mut().data.alpha = val;},
+            Some(val) => {
+                self.tree.root.borrow_mut().data.alpha = val;
+            }
             None => {}
         }
         match beta {
-            Some(val) => {self.tree.root.borrow_mut().data.alpha = val;},
+            Some(val) => {
+                self.tree.root.borrow_mut().data.alpha = val;
+            }
             None => {}
         }
         let mut color_to_move_correction = 0;
@@ -59,20 +63,35 @@ impl Search {
         let mut moves = vec![];
         loop {
             i += 1;
-            if i > 1000000000 {
+            if i > 2i32.pow(20) {
                 println!("reached limit");
                 break;
             }
             println!("{:?}", &moves);
             if self.tree.current.borrow().data.depth < max_depth {
                 println!("depth is not max");
-                if self.tree.current.borrow().data.potential_next_moves.is_none() {
+                if self
+                    .tree
+                    .current
+                    .borrow()
+                    .data
+                    .potential_next_moves
+                    .is_none()
+                {
                     println!("potential moves not initialized");
                     let board = board_from_moves(self.board.clone(), &moves);
                     let legal_moves = MoveGen::new_legal(&board).collect();
                     self.tree.current.borrow_mut().data.potential_next_moves = Some(legal_moves);
                 }
-                let next_move = self.tree.current.borrow_mut().data.potential_next_moves.as_mut().unwrap().pop();
+                let next_move = self
+                    .tree
+                    .current
+                    .borrow_mut()
+                    .data
+                    .potential_next_moves
+                    .as_mut()
+                    .unwrap()
+                    .pop();
 
                 match next_move {
                     Some(mv) => {
@@ -80,58 +99,74 @@ impl Search {
                         let alpha = self.tree.current.borrow().data.alpha;
                         let beta = self.tree.current.borrow().data.beta;
                         let depth = self.tree.current.borrow().data.depth + 1;
-        
-                        self.tree.add_child(Position::new(next_move, alpha, beta, depth));
+
+                        self.tree
+                            .add_child(Position::new(next_move, alpha, beta, depth));
                         self.tree.goto_last_child();
-        
-                        moves.push(mv); 
-                    },
+
+                        moves.push(mv);
+                    }
                     None => {
                         println!("there is no next move");
-                        if self.tree.has_no_child() {
-                            println!("we are in the leaf, but not at max depth");
-                            // here we evaluate the current chess move only
-                            // as it is either checkmate or stalemate
+                        let eval = eval(&self.board, &moves);
+                        if self.corrected_depth(color_to_move_correction) % 2 == 0 {
+                            if self.tree.has_no_child() {
+                                self.tree.current.borrow_mut().data.alpha =
+                                    max(eval, self.tree.current.borrow().data.alpha)
+                            }
+                            let alpha = self.tree.current.borrow().data.alpha;
+                            if self.move_up(&mut moves) {
+                                let beta = min(alpha, self.tree.current.borrow().data.beta);
+                                self.tree.current.borrow_mut().data.beta = beta;
+                            } else {
+                                break;
+                            }
+                        } else {
+                            if self.tree.has_no_child() {
+                                self.tree.current.borrow_mut().data.beta =
+                                    min(eval, self.tree.current.borrow().data.beta)
+                            }
+                            let beta = self.tree.current.borrow().data.beta;
+                            if self.move_up(&mut moves) {
+                                let alpha = max(beta, self.tree.current.borrow().data.alpha);
+                                self.tree.current.borrow_mut().data.alpha = alpha;
+                            } else {
+                                break;
+                            }
                         }
-                        // here we should set the alpha or beta
-                        println!("No possible move");
-                        if !self.move_up(&mut moves) {
-                            break;
-                        }
-                        // There are no more moves either because we used them all
-                        // or there vere none to begin with.
-                        //
-                        // If there are children, then the a/b are set correctly
-                        // and we can move up with the a/b
-                        //
-                        // If there were no potential moves, then we have to evaluate this position
                     }
                 }
             } else {
-                let (min, max) = eval_with_children(&self.board, &moves);
-                if (self.tree.current.borrow().data.depth + color_to_move_correction) % 2 == 0 {
-                    if !self.move_up(&mut moves) {
-                        // here save alpha to current node (the root node)
-                        break;
-                    } else {
-                        // here save alpha to current node (the root node)
+                let (min_eval, max_eval) = eval_with_children(&self.board, &moves);
+                let corrected_depth = self.corrected_depth(color_to_move_correction);
+                if corrected_depth % 2 == 0 {
+                    let alpha = max(self.tree.current.borrow().data.alpha, max_eval);
+                    self.tree.current.borrow_mut().data.alpha = alpha;
+                    if self.move_up(&mut moves) {
+                        let beta = min(alpha, self.tree.current.borrow().data.beta);
+                        self.tree.current.borrow_mut().data.beta = beta;
                     }
                 } else {
-                    if !self.move_up(&mut moves) {
-                        // here save beta to current node (the root node)
-                        break;
-                    } else {
-                        // here save beta to current node (the root node)
+                    let beta = max(self.tree.current.borrow().data.beta, min_eval);
+                    self.tree.current.borrow_mut().data.beta = beta;
+                    if self.move_up(&mut moves) {
+                        let alpha = max(beta, self.tree.current.borrow().data.alpha);
+                        self.tree.current.borrow_mut().data.alpha = alpha;
                     }
-                }
-                // Here is main evaluation place
-                // We evaluate all possible moves and get best/worst from there
-                // and save alpha/beta to parent
-                if !self.move_up(&mut moves) {
-                    break;
                 }
             }
         }
+        println!(
+            "{:?}",
+            (
+                self.tree.root.borrow().data.alpha,
+                self.tree.root.borrow().data.beta
+            )
+        )
+    }
+
+    fn corrected_depth(&self, color_to_move_correction: u8) -> u8 {
+        self.tree.current.borrow().data.depth + color_to_move_correction
     }
 
     fn move_up(&mut self, moves: &mut Vec<ChessMove>) -> bool {

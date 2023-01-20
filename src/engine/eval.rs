@@ -1,11 +1,13 @@
-use chess::{Board, BoardStatus, ChessMove, Color, Piece, MoveGen};
+use chess::{Board, BoardStatus, ChessMove, Color, MoveGen, Piece};
 
 const CHECKMATE_EVAL: i16 = 10000;
 
 pub fn eval_with_children(start_board: &Board, moves: &Vec<ChessMove>) -> (i16, i16) {
     let board = make_moves(start_board, moves);
     if board.status() == BoardStatus::Ongoing {
-        let evals: Vec<i16> = MoveGen::new_legal(&board).map(|mv| eval_one(&Board::make_move_new(&board, mv))).collect();
+        let evals: Vec<i16> = MoveGen::new_legal(&board)
+            .map(|mv| eval_one(&Board::make_move_new(&board, mv)))
+            .collect();
         (*evals.iter().min().unwrap(), *evals.iter().max().unwrap())
     } else {
         let result = eval_one(&board);
@@ -159,7 +161,10 @@ mod tests {
         );
         assert_eq!(board.status(), BoardStatus::Checkmate);
         assert_eq!(eval(&board, &vec![]), CHECKMATE_EVAL);
-        assert_eq!(eval_with_children(&board, &vec![]), (CHECKMATE_EVAL, CHECKMATE_EVAL));
+        assert_eq!(
+            eval_with_children(&board, &vec![]),
+            (CHECKMATE_EVAL, CHECKMATE_EVAL)
+        );
     }
 
     fn test_getting_right_min_and_max() {

@@ -1,6 +1,6 @@
-use std::rc::{Weak, Rc};
 use std::cell::RefCell;
-
+use std::rc::{Rc, Weak};
+use core::slice::Iter;
 
 #[derive(Debug)]
 pub struct Node<T> {
@@ -15,11 +15,11 @@ impl<T> Node<T> {
     }
 
     pub fn new_with_parent(data: T, parent: Option<Weak<RefCell<Node<T>>>>) -> Node<T> {
-        return Node{
+        return Node {
             data: data,
             children: vec![],
             parent: parent,
-        }
+        };
     }
 
     pub fn add_child(&mut self, child: Rc<RefCell<Node<T>>>) {
@@ -34,7 +34,7 @@ pub struct Tree<T> {
 }
 
 impl<T> Tree<T> {
-    pub fn new(data: T) -> Tree<T>{
+    pub fn new(data: T) -> Tree<T> {
         let root = Rc::new(RefCell::new(Node::new(data)));
         Tree {
             root: Rc::clone(&root),
@@ -43,14 +43,10 @@ impl<T> Tree<T> {
     }
 
     pub fn add_child(&self, data: T) {
-        let child =  Rc::new(
-            RefCell::new(
-                Node::new_with_parent(
-                    data, 
-                    Some(Rc::downgrade(&Rc::clone(&self.current)))
-                )
-            )
-        );
+        let child = Rc::new(RefCell::new(Node::new_with_parent(
+            data,
+            Some(Rc::downgrade(&Rc::clone(&self.current))),
+        )));
         self.current.borrow_mut().add_child(child);
     }
 
@@ -77,12 +73,12 @@ impl<T> Tree<T> {
 
     pub fn goto_parent(&mut self) {
         match &Rc::clone(&self.current).borrow().parent {
-            Some(opt_reference) => {
-                match Weak::upgrade(opt_reference) {
-                    Some(reference) => {
-                        self.current = reference;
-                    },
-                    None => {panic!("parent node was deleted before child")}
+            Some(opt_reference) => match Weak::upgrade(opt_reference) {
+                Some(reference) => {
+                    self.current = reference;
+                }
+                None => {
+                    panic!("parent node was deleted before child")
                 }
             },
             None => {
@@ -90,16 +86,12 @@ impl<T> Tree<T> {
             }
         }
     }
-
 }
-
-
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    
     #[test]
     fn test_adding_children_and_going_back() {
         let mut tree = Tree::<u8>::new(0);

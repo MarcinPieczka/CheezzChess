@@ -15,8 +15,8 @@ use crate::engine::search::Search;
 pub mod eval;
 pub mod lookup;
 pub mod search;
-pub mod utils;
 pub mod tree;
+pub mod utils;
 
 pub struct Engine {
     board: Option<Board>,
@@ -121,11 +121,8 @@ impl Engine {
                 //let mut finder = Lookup::new(&self.board.unwrap());
                 //finder.run(100000);
                 //finder.run(100000000);
-                let mut search = Search::new(
-                    &self.board.unwrap(),
-                    Color::Black,
-                );
-                search.run(4, None, None);
+                let mut search = Search::new(&self.board.unwrap(), Color::Black);
+                let best_move = search.run(4, None, None);
             }
             _ => {}
         }
