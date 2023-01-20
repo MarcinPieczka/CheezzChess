@@ -69,7 +69,7 @@ impl Lookup {
     pub fn find_positions(&mut self, max_nodes: usize, max_depth: u8) {
         let mut i: usize = 0;
         info!("Looking for up to {:?} nodes", max_nodes);
-        info!("Start position eval: {:?}", eval(&self.board, vec![]));
+        info!("Start position eval: {:?}", eval(&self.board, &vec![]));
         loop {
             let children: Vec<Position>;
             {
@@ -215,7 +215,7 @@ impl Lookup {
     }
 
     pub fn eval_position(&self, position: &Position) -> i16 {
-        eval(&self.board, self.all_moves(position))
+        eval(&self.board, &self.all_moves(position))
     }
 
     pub fn best_move(&self) {

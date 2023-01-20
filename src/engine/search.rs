@@ -1,9 +1,10 @@
 
-use chess::{Board, ChessMove, Color, MoveGen, Game};
+use chess::{Board, ChessMove, Color, MoveGen, Piece, Square, Game};
+
 use log::info;
 use super::tree::Tree;
 use std::rc::{Weak, Rc};
-
+use crate::engine::eval::eval_with_children;
 
 pub struct Position {
     chess_move: Option<ChessMove>,
@@ -58,7 +59,7 @@ impl Search {
                 println!("reached limit");
                 break;
             }
-            println!("{:?}", moves);
+            println!("{:?}", &moves);
             if self.tree.current.borrow().data.depth < max_depth {
                 println!("depth is not max");
                 if self.tree.current.borrow().data.potential_next_moves.is_none() {
@@ -83,9 +84,12 @@ impl Search {
                     },
                     None => {
                         println!("there is no next move");
-                        if self.tree.has_children() {
-                            println!("has children");
+                        if self.tree.has_no_child() {
+                            println!("we are in the leaf, but not at max depth");
+                            // here we evaluate the current chess move only
+                            // as it is either checkmate or stalemate
                         }
+                        // here we should set the alpha or beta
                         println!("No possible move");
                         if !self.move_up(&mut moves) {
                             break;
@@ -100,6 +104,10 @@ impl Search {
                     }
                 }
             } else {
+                let (min, max) = eval_with_children(&self.board, &moves);
+                // Here is main evaluation place
+                // We evaluate all possible moves and get best/worst from there
+                // and save alpha/beta to parent
                 if !self.move_up(&mut moves) {
                     break;
                 }
@@ -124,6 +132,24 @@ fn board_from_moves(initial_board: Board, moves: &Vec<ChessMove>) -> Board {
         board = board.make_move_new(*mv);
     }
     board
+}
+
+pub fn show_board(board: Board) {
+    for l in (0..8).rev() {
+        let mut line = "".to_string();
+        for f in 0..8 {
+            match board.piece_on(unsafe { Square::new(f + l * 8) }) {
+                Some(Piece::King) => line += "|K ",
+                Some(Piece::Queen) => line += "|Q ",
+                Some(Piece::Rook) => line += "|R ",
+                Some(Piece::Bishop) => line += "|B ",
+                Some(Piece::Knight) => line += "|Kn",
+                Some(Piece::Pawn) => line += "|p ",
+                None => line += "|  ",
+            }
+        }
+        info!("{}", line);
+    }
 }
 
 #[cfg(test)]
