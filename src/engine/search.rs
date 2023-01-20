@@ -293,4 +293,28 @@ mod tests {
         //println!("{:?}", board.side_to_move());
         search.run(2, None, None);
     }
+
+    #[test]
+    fn test_avoiding_checkmate_in_one() {
+        let textboard = r#"
+        8|   |   |   |   |   |   |   | ♔ |
+        7|   |   |   |   |   | ♙ | ♙ | ♙ |
+        6|   |   |   |   |   |   |   |   |
+        5|   |   |   |   |   |   |   |   |
+        4|   |   |   |   |   |   |   |   |
+        3|   |   |   |   |   |   |   |   |
+        2|   |   |   |   |   |   |   |   |
+        1|   |   |   |   | ♜ | ♚ |   |   |
+        a   b   c   d   e   f   g   h 
+        "#;
+        let board = board_from_textboard(
+            textboard,
+            CastleRights::NoRights,
+            CastleRights::NoRights,
+            Color::Black,
+        );
+        let mut search = Search::new(&board, Color::Black);
+        println!("{:?}", search.run(2, None, None));
+        search.run(2, None, None);
+    }
 }
