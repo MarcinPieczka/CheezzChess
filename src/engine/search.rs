@@ -50,11 +50,19 @@ impl Search {
             Some(val) => {self.tree.root.borrow_mut().data.alpha = val;},
             None => {}
         }
-
+        let mut i = 0;
         let mut moves = vec![];
         loop {
+            i += 1;
+            if i > 1000000000 {
+                println!("reached limit");
+                break;
+            }
+            println!("{:?}", moves);
             if self.tree.current.borrow().data.depth < max_depth {
+                println!("depth is not max");
                 if self.tree.current.borrow().data.potential_next_moves.is_none() {
+                    println!("potential moves not initialized");
                     let board = board_from_moves(self.board.clone(), &moves);
                     let legal_moves = MoveGen::new_legal(&board).collect();
                     self.tree.current.borrow_mut().data.potential_next_moves = Some(legal_moves);
@@ -63,6 +71,7 @@ impl Search {
 
                 match next_move {
                     Some(mv) => {
+                        println!("there is next move");
                         let alpha = self.tree.current.borrow().data.alpha;
                         let beta = self.tree.current.borrow().data.beta;
                         let depth = self.tree.current.borrow().data.depth + 1;
@@ -73,8 +82,13 @@ impl Search {
                         moves.push(mv); 
                     },
                     None => {
-                        if self.tree.has_no_child() {
-                            self.tree.goto_parent()
+                        println!("there is no next move");
+                        if self.tree.has_children() {
+                            println!("has children");
+                        }
+                        println!("No possible move");
+                        if !self.move_up(&mut moves) {
+                            break;
                         }
                         // There are no more moves either because we used them all
                         // or there vere none to begin with.
@@ -83,10 +97,23 @@ impl Search {
                         // and we can move up with the a/b
                         //
                         // If there were no potential moves, then we have to evaluate this position
-                   
                     }
                 }
+            } else {
+                if !self.move_up(&mut moves) {
+                    break;
+                }
             }
+        }
+    }
+
+    fn move_up(&mut self, moves: &mut Vec<ChessMove>) -> bool {
+        if self.tree.has_parent() {
+            self.tree.goto_parent();
+            moves.pop();
+            true
+        } else {
+            false
         }
     }
 }

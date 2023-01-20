@@ -58,6 +58,14 @@ impl<T> Tree<T> {
         self.current.borrow().children.is_empty()
     }
 
+    pub fn has_children(&self) -> bool {
+        !self.has_no_child()
+    }
+
+    pub fn has_parent(&self) -> bool {
+        self.current.borrow().parent.is_some()
+    }
+
     pub fn goto_child(&mut self, i: usize) {
         self.current = Rc::clone(&Rc::clone(&self.current).borrow().children[i]);
     }
