@@ -7,18 +7,20 @@ pub struct Node<T> {
     pub data: T,
     children: Vec<Rc<RefCell<Node<T>>>>,
     parent: Option<Weak<RefCell<Node<T>>>>,
+    pub index: Option<usize>
 }
 
 impl<T> Node<T> {
     pub fn new(data: T) -> Node<T> {
-        Node::new_with_parent(data, None)
+        Node::new_with_parent(data, None, None)
     }
 
-    pub fn new_with_parent(data: T, parent: Option<Weak<RefCell<Node<T>>>>) -> Node<T> {
+    pub fn new_with_parent(data: T, parent: Option<Weak<RefCell<Node<T>>>>, index: Option<usize>) -> Node<T> {
         return Node {
             data: data,
             children: vec![],
             parent: parent,
+            index: index,
         };
     }
 
@@ -46,6 +48,7 @@ impl<T> Tree<T> {
         let child = Rc::new(RefCell::new(Node::new_with_parent(
             data,
             Some(Rc::downgrade(&Rc::clone(&self.current))),
+            Some(self.number_of_children())
         )));
         self.current.borrow_mut().add_child(child);
     }
@@ -60,6 +63,10 @@ impl<T> Tree<T> {
 
     pub fn has_parent(&self) -> bool {
         self.current.borrow().parent.is_some()
+    }
+
+    pub fn number_of_children(&self) -> usize {
+        self.current.borrow().children.len()
     }
 
     pub fn goto_child(&mut self, i: usize) {

@@ -9,6 +9,7 @@ use std::rc::{Rc, Weak};
 pub struct Position {
     chess_move: Option<ChessMove>,
     potential_next_moves: Option<Vec<ChessMove>>,
+    next_best: Option<usize>,
     alpha: i16,
     beta: i16,
     depth: u8,
@@ -19,6 +20,7 @@ impl Position {
         Position {
             chess_move: chess_move,
             potential_next_moves: None,
+            next_best: None,
             alpha: alpha,
             beta: beta,
             depth: depth,
@@ -42,7 +44,7 @@ impl Search {
         }
     }
 
-    pub fn run(&mut self, max_depth: u8, alpha: Option<i16>, beta: Option<i16>) {
+    pub fn run(&mut self, max_depth: u8, alpha: Option<i16>, beta: Option<i16>) -> ChessMove{
         match alpha {
             Some(val) => {
                 self.tree.root.borrow_mut().data.alpha = val;
@@ -109,27 +111,34 @@ impl Search {
                     None => {
                         println!("there is no next move");
                         let eval = eval(&self.board, &moves);
+                        let child_idx = self.tree.current.borrow().index;
+
                         if self.corrected_depth(color_to_move_correction) % 2 == 0 {
                             if self.tree.has_no_child() {
-                                self.tree.current.borrow_mut().data.alpha =
-                                    max(eval, self.tree.current.borrow().data.alpha)
+                                let alpha = max(eval, self.tree.current.borrow().data.alpha);
+                                self.tree.current.borrow_mut().data.alpha = alpha;
+                                    
                             }
                             let alpha = self.tree.current.borrow().data.alpha;
                             if self.move_up(&mut moves) {
-                                let beta = min(alpha, self.tree.current.borrow().data.beta);
-                                self.tree.current.borrow_mut().data.beta = beta;
+                                if alpha < self.tree.current.borrow().data.beta {
+                                    self.tree.current.borrow_mut().data.beta = alpha;
+                                    self.tree.current.borrow_mut().data.next_best = child_idx;
+                                }
                             } else {
                                 break;
                             }
                         } else {
                             if self.tree.has_no_child() {
-                                self.tree.current.borrow_mut().data.beta =
-                                    min(eval, self.tree.current.borrow().data.beta)
+                                let beta = min(eval, self.tree.current.borrow().data.beta);
+                                self.tree.current.borrow_mut().data.beta = beta;
                             }
                             let beta = self.tree.current.borrow().data.beta;
                             if self.move_up(&mut moves) {
-                                let alpha = max(beta, self.tree.current.borrow().data.alpha);
-                                self.tree.current.borrow_mut().data.alpha = alpha;
+                                if beta > self.tree.current.borrow().data.alpha {
+                                    self.tree.current.borrow_mut().data.alpha = beta;
+                                    self.tree.current.borrow_mut().data.next_best = child_idx;
+                                }
                             } else {
                                 break;
                             }
@@ -139,19 +148,28 @@ impl Search {
             } else {
                 let (min_eval, max_eval) = eval_with_children(&self.board, &moves);
                 let corrected_depth = self.corrected_depth(color_to_move_correction);
+                let child_idx = self.tree.current.borrow().index;
                 if corrected_depth % 2 == 0 {
                     let alpha = max(self.tree.current.borrow().data.alpha, max_eval);
                     self.tree.current.borrow_mut().data.alpha = alpha;
                     if self.move_up(&mut moves) {
-                        let beta = min(alpha, self.tree.current.borrow().data.beta);
-                        self.tree.current.borrow_mut().data.beta = beta;
+                        if alpha < self.tree.current.borrow().data.beta {
+                            self.tree.current.borrow_mut().data.beta = alpha;
+                            self.tree.current.borrow_mut().data.next_best = child_idx;
+                        }
+                    } else {
+                        break;
                     }
                 } else {
                     let beta = max(self.tree.current.borrow().data.beta, min_eval);
                     self.tree.current.borrow_mut().data.beta = beta;
                     if self.move_up(&mut moves) {
-                        let alpha = max(beta, self.tree.current.borrow().data.alpha);
-                        self.tree.current.borrow_mut().data.alpha = alpha;
+                        if beta > self.tree.current.borrow().data.alpha {
+                            self.tree.current.borrow_mut().data.alpha = beta;
+                            self.tree.current.borrow_mut().data.next_best = child_idx;
+                        }
+                    } else {
+                        break;
                     }
                 }
             }
@@ -160,9 +178,14 @@ impl Search {
             "{:?}",
             (
                 self.tree.root.borrow().data.alpha,
-                self.tree.root.borrow().data.beta
+                self.tree.root.borrow().data.beta,
             )
-        )
+        );
+        let next_move_idx = self.tree.current.borrow().data.next_best;
+        self.tree.goto_child(next_move_idx.unwrap());
+        let next_move = self.tree.current.borrow().data.chess_move.unwrap();
+        show_board(self.board.make_move_new(next_move));
+        next_move
     }
 
     fn corrected_depth(&self, color_to_move_correction: u8) -> u8 {
@@ -202,17 +225,45 @@ pub fn show_board(board: Board) {
                 None => line += "|  ",
             }
         }
-        info!("{}", line);
+        println!("{}", line);
     }
 }
 
 #[cfg(test)]
 mod tests {
+    use chess::CastleRights;
+
+    use crate::engine::utils::board_from_textboard;
+
     use super::*;
 
     #[test]
     fn test_running_search() {
         let board = Game::new().current_position();
+        let mut search = Search::new(&board, Color::White);
+        println!("{:?}", board.side_to_move());
+        search.run(2, None, None);
+    }
+
+    #[test]
+    fn test_performing_checkmate_in_one() {
+        let textboard = r#"
+        8|   |   |   |   |   |   |   | ♔ |
+        7|   |   |   |   |   |   |   | ♟︎ |
+        6|   |   |   |   |   |   | ♟︎ | ♚ |
+        5|   |   |   |   |   |   |   |   |
+        4|   |   |   |   |   |   |   |   |
+        3|   |   |   |   |   |   |   |   |
+        2|   |   |   |   |   |   |   |   |
+        1|   |   |   |   |   |   |   |   |
+        a   b   c   d   e   f   g   h 
+        "#;
+        let board = board_from_textboard(
+            textboard,
+            CastleRights::NoRights,
+            CastleRights::NoRights,
+            Color::White,
+        );
         let mut search = Search::new(&board, Color::White);
         println!("{:?}", board.side_to_move());
         search.run(2, None, None);
