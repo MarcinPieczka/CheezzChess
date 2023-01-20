@@ -66,12 +66,12 @@ impl Search {
         loop {
             i += 1;
             if i > 2i32.pow(20) {
-                println!("reached limit");
+                //println!("reached limit");
                 break;
             }
-            println!("{:?}", &moves);
+            //println!("{:?}", &moves);
             if self.tree.current.borrow().data.depth < max_depth {
-                println!("depth is not max");
+                //println!("depth is not max");
                 if self
                     .tree
                     .current
@@ -80,7 +80,7 @@ impl Search {
                     .potential_next_moves
                     .is_none()
                 {
-                    println!("potential moves not initialized");
+                    //println!("potential moves not initialized");
                     let board = board_from_moves(self.board.clone(), &moves);
                     let legal_moves = MoveGen::new_legal(&board).collect();
                     self.tree.current.borrow_mut().data.potential_next_moves = Some(legal_moves);
@@ -97,7 +97,7 @@ impl Search {
 
                 match next_move {
                     Some(mv) => {
-                        println!("there is next move");
+                        //println!("there is next move");
                         let alpha = self.tree.current.borrow().data.alpha;
                         let beta = self.tree.current.borrow().data.beta;
                         let depth = self.tree.current.borrow().data.depth + 1;
@@ -109,7 +109,7 @@ impl Search {
                         moves.push(mv);
                     }
                     None => {
-                        println!("there is no next move");
+                        //println!("there is no next move");
                         let eval = eval(&self.board, &moves);
                         let child_idx = self.tree.current.borrow().index;
 
@@ -122,6 +122,7 @@ impl Search {
                             let alpha = self.tree.current.borrow().data.alpha;
                             if self.move_up(&mut moves) {
                                 if alpha < self.tree.current.borrow().data.beta {
+                                    self.show_board_from_moves(&moves);
                                     self.tree.current.borrow_mut().data.beta = alpha;
                                     self.tree.current.borrow_mut().data.next_best = child_idx;
                                 }
@@ -136,6 +137,7 @@ impl Search {
                             let beta = self.tree.current.borrow().data.beta;
                             if self.move_up(&mut moves) {
                                 if beta > self.tree.current.borrow().data.alpha {
+                                    self.show_board_from_moves(&moves);
                                     self.tree.current.borrow_mut().data.alpha = beta;
                                     self.tree.current.borrow_mut().data.next_best = child_idx;
                                 }
@@ -154,6 +156,7 @@ impl Search {
                     self.tree.current.borrow_mut().data.alpha = alpha;
                     if self.move_up(&mut moves) {
                         if alpha < self.tree.current.borrow().data.beta {
+                            self.show_board_from_moves(&moves);
                             self.tree.current.borrow_mut().data.beta = alpha;
                             self.tree.current.borrow_mut().data.next_best = child_idx;
                         }
@@ -165,6 +168,7 @@ impl Search {
                     self.tree.current.borrow_mut().data.beta = beta;
                     if self.move_up(&mut moves) {
                         if beta > self.tree.current.borrow().data.alpha {
+                            self.show_board_from_moves(&moves);
                             self.tree.current.borrow_mut().data.alpha = beta;
                             self.tree.current.borrow_mut().data.next_best = child_idx;
                         }
@@ -174,17 +178,30 @@ impl Search {
                 }
             }
         }
-        println!(
-            "{:?}",
-            (
-                self.tree.root.borrow().data.alpha,
-                self.tree.root.borrow().data.beta,
-            )
-        );
+        //println!(
+        //     "{:?}",
+        //     (
+        //         self.tree.root.borrow().data.alpha,
+        //         self.tree.root.borrow().data.beta,
+        //     )
+        // );
+        loop {
+            info!("Checking if has parent");
+            if self.tree.has_parent(){
+                info!("Going to parent");
+                self.tree.goto_parent();
+            } else {
+                break;
+            } 
+        }
+
         let next_move_idx = self.tree.current.borrow().data.next_best;
+        self.show_board_from_moves(&moves);
+        info!("best crnt: {:?}", self.tree.current.borrow().data.next_best);
+        info!("index crnt: {:?}", self.tree.current.borrow().index);
+
         self.tree.goto_child(next_move_idx.unwrap());
         let next_move = self.tree.current.borrow().data.chess_move.unwrap();
-        show_board(self.board.make_move_new(next_move));
         next_move
     }
 
@@ -199,6 +216,14 @@ impl Search {
             true
         } else {
             false
+        }
+    }
+
+    fn show_board_from_moves(&self, moves: &Vec<ChessMove>) {
+        if moves.len() < 2{
+            info!("depth: {}", moves.len());
+            info!("index: {:?}", self.tree.root.borrow().data.next_best);
+            show_board(board_from_moves(self.board, moves));
         }
     }
 }
@@ -225,7 +250,7 @@ pub fn show_board(board: Board) {
                 None => line += "|  ",
             }
         }
-        println!("{}", line);
+        info!("{}", line);
     }
 }
 
@@ -241,7 +266,7 @@ mod tests {
     fn test_running_search() {
         let board = Game::new().current_position();
         let mut search = Search::new(&board, Color::White);
-        println!("{:?}", board.side_to_move());
+        //println!("{:?}", board.side_to_move());
         search.run(2, None, None);
     }
 
@@ -265,7 +290,7 @@ mod tests {
             Color::White,
         );
         let mut search = Search::new(&board, Color::White);
-        println!("{:?}", board.side_to_move());
+        //println!("{:?}", board.side_to_move());
         search.run(2, None, None);
     }
 }
