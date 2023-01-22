@@ -129,7 +129,7 @@ impl Search {
                         //println!("there is no next move");
                         number_of_evaluated += 1;
 
-                        let eval = eval(&self.board, &moves);
+                        let eval = eval(&self.board, &moves, self.color);
                         let child_idx = self.tree.current.borrow().index;
 
                         if self.corrected_depth(color_to_move_correction) % 2 == 0 {
@@ -168,7 +168,7 @@ impl Search {
                 }
             } else {
                 number_of_evaluated += 1;
-                let (min_eval, max_eval) = eval_with_children(&self.board, &moves);
+                let (min_eval, max_eval) = eval_with_children(&self.board, &moves, self.color);
                 let corrected_depth = self.corrected_depth(color_to_move_correction);
                 let child_idx = self.tree.current.borrow().index;
                 if corrected_depth % 2 == 0 {

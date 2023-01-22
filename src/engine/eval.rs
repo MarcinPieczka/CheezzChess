@@ -2,25 +2,26 @@ use chess::{Board, BoardStatus, ChessMove, Color, MoveGen, Piece};
 
 const CHECKMATE_EVAL: i16 = 10000;
 
-pub fn eval_with_children(start_board: &Board, moves: &Vec<ChessMove>) -> (i16, i16) {
+pub fn eval_with_children(start_board: &Board, moves: &Vec<ChessMove>, color: Color) -> (i16, i16) {
     let board = make_moves(start_board, moves);
     if board.status() == BoardStatus::Ongoing {
         let evals: Vec<i16> = MoveGen::new_legal(&board)
-            .map(|mv| eval_one(&Board::make_move_new(&board, mv)))
+            .map(|mv| eval_one(&Board::make_move_new(&board, mv), color))
             .collect();
         (*evals.iter().min().unwrap(), *evals.iter().max().unwrap())
     } else {
-        let result = eval_one(&board);
+        let result = eval_one(&board, color);
         (result, result)
     }
 }
 
-pub fn eval(start_board: &Board, moves: &Vec<ChessMove>) -> i16 {
+pub fn eval(start_board: &Board, moves: &Vec<ChessMove>, color: Color) -> i16 {
+
     let board = make_moves(start_board, moves);
-    eval_one(&board)
+    eval_one(&board, color)
 }
 
-fn eval_one(board: &Board) -> i16 {
+fn eval_one(board: &Board, color: Color) -> i16 {
     let score: i16;
 
     if board.status() == BoardStatus::Stalemate {
@@ -33,7 +34,7 @@ fn eval_one(board: &Board) -> i16 {
             score = eval_material(board);
         }
     }
-    score
+    score * (1 - 2 *((color == Color::Black) as i16))
 }
 
 fn make_moves(start_board: &Board, moves: &Vec<ChessMove>) -> Board {
@@ -112,8 +113,10 @@ mod tests {
             CastleRights::NoRights,
             Color::White,
         );
-        assert_eq!(eval(&board, &vec![]), 100);
-        assert_eq!(eval_with_children(&board, &vec![]), (100, 100));
+        assert_eq!(eval(&board, &vec![], Color::White), 100);
+        assert_eq!(eval(&board, &vec![], Color::Black), -100);
+        assert_eq!(eval_with_children(&board, &vec![], Color::White), (100, 100));
+        assert_eq!(eval_with_children(&board, &vec![], Color::Black), (-100, -100));
     }
 
     #[test]
@@ -136,8 +139,8 @@ mod tests {
             Color::Black,
         );
         assert_eq!(board.status(), BoardStatus::Stalemate);
-        assert_eq!(eval(&board, &vec![]), 0);
-        assert_eq!(eval_with_children(&board, &vec![]), (0, 0));
+        assert_eq!(eval(&board, &vec![], Color::White), 0);
+        assert_eq!(eval_with_children(&board, &vec![], Color::White), (0, 0));
     }
 
     #[test]
@@ -160,10 +163,15 @@ mod tests {
             Color::Black,
         );
         assert_eq!(board.status(), BoardStatus::Checkmate);
-        assert_eq!(eval(&board, &vec![]), CHECKMATE_EVAL);
+        assert_eq!(eval(&board, &vec![], Color::White), CHECKMATE_EVAL);
+        assert_eq!(eval(&board, &vec![], Color::Black), -CHECKMATE_EVAL);
         assert_eq!(
-            eval_with_children(&board, &vec![]),
+            eval_with_children(&board, &vec![], Color::White),
             (CHECKMATE_EVAL, CHECKMATE_EVAL)
+        );
+        assert_eq!(
+            eval_with_children(&board, &vec![], Color::Black),
+            (-CHECKMATE_EVAL, -CHECKMATE_EVAL)
         );
     }
 
@@ -185,6 +193,7 @@ mod tests {
             CastleRights::NoRights,
             Color::White,
         );
-        assert_eq!(eval_with_children(&board, &vec![]), (0, 100));
+        assert_eq!(eval_with_children(&board, &vec![], Color::White), (0, 100));
+        assert_eq!(eval_with_children(&board, &vec![], Color::Black), (0, -100));
     }
 }

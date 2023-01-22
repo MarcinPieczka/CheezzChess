@@ -9,11 +9,9 @@ use std::time::Duration;
 use vampirc_uci::Duration as VampDuration;
 use vampirc_uci::{UciMessage, UciTimeControl};
 
-use crate::engine::lookup::Lookup;
-use crate::engine::search::Search;
+use crate::engine::search::{Search, show_board};
 
 pub mod eval;
-pub mod lookup;
 pub mod search;
 pub mod tree;
 pub mod utils;
@@ -89,7 +87,7 @@ impl Engine {
 
                 self.board = Some(game.current_position());
                 info!("Starting Board:");
-                lookup::show_board(self.board.unwrap());
+                show_board(self.board.unwrap());
             }
             UciMessage::SetOption { .. } => {}
             UciMessage::UciNewGame => {
