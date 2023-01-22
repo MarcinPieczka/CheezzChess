@@ -2,6 +2,31 @@ use chess::{Board, BoardBuilder, CastleRights, Color, File, Piece, Rank, Square}
 use std::string::String as StdString;
 use string::String;
 
+
+#[cfg(not(test))] 
+use log::{info, warn};
+ 
+#[cfg(test)]
+use std::{println as info, println as warn};
+
+
+pub fn show_board(board: Board) {
+    for l in (0..8).rev() {
+        let mut line = "".to_string();
+        for f in 0..8 {
+            let square = unsafe { Square::new(f + l * 8) };
+            match (board.piece_on(square), board.color_on(square)) {
+                (Some(piece), Some(color)) => {
+                    line += &format!("| {} ", piece_to_char(piece, color));
+                },
+                _ => line += "|   ",
+            }
+        }
+        info!("{}", line);
+    }
+}
+
+
 pub fn board_from_textboard(
     textboard: &str,
     white_castle_rights: CastleRights,
@@ -81,6 +106,7 @@ fn char_to_piece(char: &str) -> Option<(Piece, Color)> {
     }
 }
 
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -96,7 +122,7 @@ mod tests {
         3|   |   |   |   |   |   |   |   |
         2| ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ | ♟︎ |
         1| ♜ | ♞ | ♝ | ♛ | ♚ | ♝ | ♞ | ♜ |
-        a   b   c   d   e   f   g   h 
+           a   b   c   d   e   f   g   h 
         "#;
         let board = board_from_textboard(
             position,

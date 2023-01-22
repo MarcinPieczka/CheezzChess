@@ -9,7 +9,8 @@ use std::time::Duration;
 use vampirc_uci::Duration as VampDuration;
 use vampirc_uci::{UciMessage, UciTimeControl};
 
-use crate::engine::search::{Search, show_board};
+use crate::engine::search::{Search};
+use crate::engine::utils::show_board;
 
 pub mod eval;
 pub mod search;

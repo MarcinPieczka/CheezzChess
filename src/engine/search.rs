@@ -2,6 +2,7 @@ use chess::{Board, ChessMove, Color, Game, MoveGen, Piece, Square};
 
 use super::tree::Tree;
 use crate::engine::eval::{eval, eval_with_children};
+use crate::engine::utils::show_board;
 use std::cmp::{max, min};
 use std::rc::{Rc, Weak};
 
@@ -256,23 +257,6 @@ fn board_from_moves(initial_board: Board, moves: &Vec<ChessMove>) -> Board {
     board
 }
 
-pub fn show_board(board: Board) {
-    for l in (0..8).rev() {
-        let mut line = "".to_string();
-        for f in 0..8 {
-            match board.piece_on(unsafe { Square::new(f + l * 8) }) {
-                Some(Piece::King) => line += "|K ",
-                Some(Piece::Queen) => line += "|Q ",
-                Some(Piece::Rook) => line += "|R ",
-                Some(Piece::Bishop) => line += "|B ",
-                Some(Piece::Knight) => line += "|Kn",
-                Some(Piece::Pawn) => line += "|p ",
-                None => line += "|  ",
-            }
-        }
-        info!("{}", line);
-    }
-}
 
 pub fn moves_to_string( moves: &Vec<ChessMove>) -> String{
     moves.iter().map(|mv| chess_move_to_string(mv))
