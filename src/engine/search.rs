@@ -292,6 +292,10 @@ pub fn chess_move_to_string(mv: &ChessMove) -> String {
     format!("{}:{}", mv.get_source().to_string(), mv.get_dest().to_string())
 }
 
+pub fn mv_cmp(mv: &ChessMove, expcted: &str){
+    assert_eq!(chess_move_to_string(mv), expcted);
+}
+
 #[cfg(test)]
 mod tests {
     use chess::CastleRights;
@@ -333,17 +337,42 @@ mod tests {
     }
 
     #[test]
-    fn test_avoiding_checkmate_in_one() {
+    fn test_avoiding_checkmate_in_one_white() {
         let textboard = r#"
-        8|   |   |   |   |   |   |   | ♔ |
-        7|   |   |   |   |   | ♙ | ♙ | ♙ |
+        8|   |   |   |   | ♖ |   |   | ♔ |
+        7|   |   |   |   |   |   |   |   |
         6|   |   |   |   |   |   |   |   |
         5|   |   |   |   |   |   |   |   |
+        4|   | ♟︎ | ♟︎ |   |   |   |   | ♙ |
+        3|   |   |   |   |   | ♙ | ♟︎ |   |
+        2| ♟︎ |   |   |   |   | ♟︎ |   | ♟︎ |
+        1|   |   |   |   |   |   |   | ♚ |
+           a   b   c   d   e   f   g   h 
+        "#;
+        let board = board_from_textboard(
+            textboard,
+            CastleRights::NoRights,
+            CastleRights::NoRights,
+            Color::White,
+        );
+        let mut search = Search::new(&board, Color::White);
+        println!("{:?}", search.run(2, None, None));
+        let best = search.run(2, None, None);
+        mv_cmp(&best, "h2:h3")
+    }
+
+    #[test]
+    fn test_avoiding_checkmate_in_one_black() {
+        let textboard = r#"
+        8|   |   |   |   |   |   |   | ♔ |
+        7|   |   | ♙ |   |   | ♙ |   | ♙ |
+        6|   | ♙ |   |   |   | ♟︎ | ♙ |   |
+        5| ♙ |   |   |   |   |   |   | ♟︎ |
         4|   |   |   |   |   |   |   |   |
         3|   |   |   |   |   |   |   |   |
         2|   |   |   |   |   |   |   |   |
         1|   |   |   |   | ♜ | ♚ |   |   |
-        a   b   c   d   e   f   g   h 
+           a   b   c   d   e   f   g   h 
         "#;
         let board = board_from_textboard(
             textboard,
@@ -353,6 +382,7 @@ mod tests {
         );
         let mut search = Search::new(&board, Color::Black);
         println!("{:?}", search.run(2, None, None));
-        search.run(2, None, None);
+        let best = search.run(2, None, None);
+        mv_cmp(&best, "h7:h6")
     }
 }
