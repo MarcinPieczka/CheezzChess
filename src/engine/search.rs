@@ -2,9 +2,14 @@ use chess::{Board, ChessMove, Color, Game, MoveGen, Piece, Square};
 
 use super::tree::Tree;
 use crate::engine::eval::{eval, eval_with_children};
-use log::info;
 use std::cmp::{max, min};
 use std::rc::{Rc, Weak};
+
+#[cfg(not(test))] 
+use log::{info, warn};
+ 
+#[cfg(test)]
+use std::{println as info, println as warn};
 
 pub struct Position {
     chess_move: Option<ChessMove>,
@@ -136,9 +141,9 @@ impl Search {
                             let alpha = self.tree.current.borrow().data.alpha;
                             if self.move_up(&mut moves) {
                                 if alpha < self.tree.current.borrow().data.beta {
-                                    self.show_board_from_moves(&moves);
                                     self.tree.current.borrow_mut().data.beta = alpha;
                                     self.tree.current.borrow_mut().data.next_best = child_idx;
+                                    self.show_board_from_moves(&moves);
                                 }
                             } else {
                                 break;
@@ -151,9 +156,9 @@ impl Search {
                             let beta = self.tree.current.borrow().data.beta;
                             if self.move_up(&mut moves) {
                                 if beta > self.tree.current.borrow().data.alpha {
-                                    self.show_board_from_moves(&moves);
                                     self.tree.current.borrow_mut().data.alpha = beta;
                                     self.tree.current.borrow_mut().data.next_best = child_idx;
+                                    self.show_board_from_moves(&moves);
                                 }
                             } else {
                                 break;
@@ -171,9 +176,11 @@ impl Search {
                     self.tree.current.borrow_mut().data.alpha = alpha;
                     if self.move_up(&mut moves) {
                         if alpha < self.tree.current.borrow().data.beta {
-                            self.show_board_from_moves(&moves);
                             self.tree.current.borrow_mut().data.beta = alpha;
                             self.tree.current.borrow_mut().data.next_best = child_idx;
+                            info!("");
+                            info!("on max depth");
+                            self.show_board_from_moves(&moves);
                         }
                     } else {
                         break;
@@ -183,9 +190,11 @@ impl Search {
                     self.tree.current.borrow_mut().data.beta = beta;
                     if self.move_up(&mut moves) {
                         if beta > self.tree.current.borrow().data.alpha {
-                            self.show_board_from_moves(&moves);
                             self.tree.current.borrow_mut().data.alpha = beta;
                             self.tree.current.borrow_mut().data.next_best = child_idx;
+                            info!("");
+                            info!("on max depth");
+                            self.show_board_from_moves(&moves);
                         }
                     } else {
                         break;
@@ -193,13 +202,7 @@ impl Search {
                 }
             }
         }
-        //println!(
-        //     "{:?}",
-        //     (
-        //         self.tree.root.borrow().data.alpha,
-        //         self.tree.root.borrow().data.beta,
-        //     )
-        // );
+
         loop {
             info!("Checking if has parent");
             if self.tree.has_parent(){
@@ -214,7 +217,9 @@ impl Search {
         self.show_board_from_moves(&moves);
         info!("number of pruned: {}", number_of_pruned);
         info!("number of evaluated: {}", number_of_evaluated);
-
+        info!("alpha: {}", self.tree.root.borrow().data.alpha);
+        info!("beta: {}", self.tree.root.borrow().data.beta);
+        info!("next_best: {:?}", self.tree.root.borrow().data.next_best);
 
         self.tree.goto_child(next_move_idx.unwrap());
         let next_move = self.tree.current.borrow().data.chess_move.unwrap();
@@ -236,9 +241,12 @@ impl Search {
     }
 
     fn show_board_from_moves(&self, moves: &Vec<ChessMove>) {
-        if moves.len() < 2{
+        if moves.len() < 4{
+            info!("moves: {}", moves_to_string(&moves));
             info!("depth: {}", moves.len());
-            info!("index: {:?}", self.tree.root.borrow().data.next_best);
+            info!("index: {:?}", self.tree.current.borrow().index);
+            info!("alpha: {}", self.tree.current.borrow().data.alpha);
+            info!("beta: {}", self.tree.current.borrow().data.beta);
             show_board(board_from_moves(self.board, moves));
         }
     }
@@ -268,6 +276,20 @@ pub fn show_board(board: Board) {
         }
         info!("{}", line);
     }
+}
+
+pub fn moves_to_string( moves: &Vec<ChessMove>) -> String{
+    moves.iter().map(|mv| chess_move_to_string(mv))
+    .fold(String::new(), |acc: String, e: String| acc + &e + ", ")
+
+    // let retult = String::new();
+    // for mv in moves.iter().map(|mv| chess_move_to_string(mv)).reduce(f) {
+
+    // }
+}
+
+pub fn chess_move_to_string(mv: &ChessMove) -> String {
+    format!("{}:{}", mv.get_source().to_string(), mv.get_dest().to_string())
 }
 
 #[cfg(test)]

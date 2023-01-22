@@ -120,25 +120,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "chessengine"
-version = "0.1.0"
-dependencies = [
- "chess",
- "ctrlc",
- "fibers",
- "lazy_static",
- "log",
- "more-asserts",
- "num_cpus",
- "rand 0.8.4",
- "rayon",
- "simplelog",
- "string",
- "trees",
- "vampirc-uci",
-]
-
-[[package]]
 name = "chrono"
 version = "0.4.19"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -348,6 +329,25 @@ name = "libc"
 version = "0.2.99"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a7f823d141fe0a24df1e23b4af4e3c7ba9e5966ec514ea068c93024aa7deb765"
+
+[[package]]
+name = "locochess"
+version = "0.1.0"
+dependencies = [
+ "chess",
+ "ctrlc",
+ "fibers",
+ "lazy_static",
+ "log",
+ "more-asserts",
+ "num_cpus",
+ "rand 0.8.4",
+ "rayon",
+ "simplelog",
+ "string",
+ "trees",
+ "vampirc-uci",
+]
 
 [[package]]
 name = "log"
