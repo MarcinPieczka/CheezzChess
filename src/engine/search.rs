@@ -68,9 +68,6 @@ impl Search {
         if self.board.side_to_move() != self.color {
             color_to_move_correction += 1;
         }
-        if self.board.side_to_move() == Color::Black {
-            color_to_move_correction += 1;
-        }
         let mut i = 0;
         let mut moves = vec![];
         loop {
