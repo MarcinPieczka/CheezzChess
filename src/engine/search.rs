@@ -41,7 +41,8 @@ pub struct Search {
 
 impl Search {
     pub fn new(board: &Board, color: Color) -> Search {
-        info!("Creating Search with color {:?}", board.side_to_move());
+        info!("Creating Search with color {:?}", color);
+        show_board(*board);
         Search {
             tree: Tree::new(Position::new(None, i16::MIN, i16::MAX, 0)),
             color: color,
@@ -64,9 +65,12 @@ impl Search {
             }
             None => {}
         }
-        let mut color_to_move_correction = 0;
+        let mut depth_correction = 0;
         if self.board.side_to_move() != self.color {
-            color_to_move_correction += 1;
+            info!("using depth correction");
+            depth_correction = 1;
+        } else {
+            info!("not using depth correction");
         }
         let mut i = 0;
         let mut moves = vec![];
@@ -76,9 +80,7 @@ impl Search {
                 //println!("reached limit");
                 break;
             }
-            //println!("{:?}", &moves);
             if self.tree.current.borrow().data.depth < max_depth {
-                //println!("depth is not max");
                 if self
                     .tree
                     .current
@@ -87,7 +89,6 @@ impl Search {
                     .potential_next_moves
                     .is_none()
                 {
-                    //println!("potential moves not initialized");
                     let board = board_from_moves(self.board.clone(), &moves);
                     let legal_moves = MoveGen::new_legal(&board).collect();
                     self.tree.current.borrow_mut().data.potential_next_moves = Some(legal_moves);
@@ -111,7 +112,6 @@ impl Search {
 
                 match next_move {
                     Some(mv) => {
-                        //println!("there is next move");
                         let alpha = self.tree.current.borrow().data.alpha;
                         let beta = self.tree.current.borrow().data.beta;
                         let depth = self.tree.current.borrow().data.depth + 1;
@@ -123,13 +123,12 @@ impl Search {
                         moves.push(mv);
                     }
                     None => {
-                        //println!("there is no next move");
                         number_of_evaluated += 1;
 
                         let eval = eval(&self.board, &moves, self.color);
                         let child_idx = self.tree.current.borrow().index;
 
-                        if self.corrected_depth(color_to_move_correction) % 2 == 0 {
+                        if self.corrected_depth(depth_correction) % 2 == 0 {
                             if self.tree.has_no_child() {
                                 let alpha = max(eval, self.tree.current.borrow().data.alpha);
                                 self.tree.current.borrow_mut().data.alpha = alpha;
@@ -166,7 +165,7 @@ impl Search {
             } else {
                 number_of_evaluated += 1;
                 let (min_eval, max_eval) = eval_with_children(&self.board, &moves, self.color);
-                let corrected_depth = self.corrected_depth(color_to_move_correction);
+                let corrected_depth = self.corrected_depth(depth_correction);
                 let child_idx = self.tree.current.borrow().index;
                 if corrected_depth % 2 == 0 {
                     let alpha = max(self.tree.current.borrow().data.alpha, max_eval);
@@ -183,7 +182,7 @@ impl Search {
                         break;
                     }
                 } else {
-                    let beta = max(self.tree.current.borrow().data.beta, min_eval);
+                    let beta = min(self.tree.current.borrow().data.beta, min_eval);
                     self.tree.current.borrow_mut().data.beta = beta;
                     if self.move_up(&mut moves) {
                         if beta > self.tree.current.borrow().data.alpha {
@@ -223,8 +222,8 @@ impl Search {
         next_move
     }
 
-    fn corrected_depth(&self, color_to_move_correction: u8) -> u8 {
-        self.tree.current.borrow().data.depth + color_to_move_correction
+    fn corrected_depth(&self, depth_correction: u8) -> u8 {
+        self.tree.current.borrow().data.depth + depth_correction
     }
 
     fn move_up(&mut self, moves: &mut Vec<ChessMove>) -> bool {
@@ -381,5 +380,56 @@ mod tests {
         println!("{:?}", search.run(2, None, None));
         let best = search.run(2, None, None);
         mv_cmp(&best, "h7:h6")
+    }
+
+    #[test]
+    fn test_avoiding_checkmate_in_two_white() {
+        let textboard = r#"
+        8|   |   |   |   | ♖ |   |   | ♔ |
+        7|   |   |   |   | ♙ |   |   |   |
+        6|   |   |   |   |   |   |   |   |
+        5|   |   |   |   |   |   |   |   |
+        4|   | ♟︎ | ♟︎ |   |   |   |   |   |
+        3|   |   |   |   |   |   | ♟︎ | ♙ |
+        2| ♟︎ |   |   |   |   | ♟︎ |   | ♟︎ |
+        1|   |   |   |   |   |   |   | ♚ |
+           a   b   c   d   e   f   g   h 
+        "#;
+        let board = board_from_textboard(
+            textboard,
+            CastleRights::NoRights,
+            CastleRights::NoRights,
+            Color::White,
+        );
+        let mut search = Search::new(&board, Color::White);
+        let best = search.run(2, None, None);
+        assert_eq!(best, search.run(3, None, None));
+        mv_cmp(&best, "h1:g1")
+    }
+
+    #[test]
+    fn test_avoiding_checkmate_in_two_black() {
+        let textboard = r#"
+        8|   |   |   |   |   |   |   | ♔ |
+        7|   |   | ♙ |   |   | ♙ |   | ♙ |
+        6|   | ♙ |   |   |   |   | ♙ | ♟︎ |
+        5| ♙ |   |   |   |   |   |   |   |
+        4|   |   |   |   |   |   |   |   |
+        3|   |   |   |   |   |   |   |   |
+        2|   |   |   |   | ♟︎ |   |   |   |
+        1|   |   |   |   | ♜ | ♚ |   |   |
+           a   b   c   d   e   f   g   h 
+        "#;
+        let board = board_from_textboard(
+            textboard,
+            CastleRights::NoRights,
+            CastleRights::NoRights,
+            Color::Black,
+        );
+        let mut search = Search::new(&board, Color::Black);
+
+        let best = search.run(2, None, None);
+        assert_eq!(best, search.run(3, None, None));
+        mv_cmp(&best, "h8:g8")
     }
 }
