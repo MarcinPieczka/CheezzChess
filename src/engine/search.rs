@@ -5,6 +5,7 @@ use crate::engine::eval::{eval, eval_with_children};
 use crate::engine::utils::show_board;
 use std::cmp::{max, min};
 use std::rc::{Rc, Weak};
+use std::str::FromStr;
 
 #[cfg(not(test))] 
 use log::{info, warn};
@@ -91,14 +92,30 @@ impl Search {
                     .is_none()
                 {
                     let board = board_from_moves(self.board.clone(), &moves);
-                    let legal_moves = MoveGen::new_legal(&board).collect();
+                    let legal_moves = get_possible_moves(&board);
                     self.tree.current.borrow_mut().data.potential_next_moves = Some(legal_moves);
                 }
                 let alpha = self.tree.current.borrow().data.alpha;
                 let beta = self.tree.current.borrow().data.beta;
-                if alpha > beta{
+                if alpha >= beta{
                     number_of_pruned += 1;
-                    self.move_up(&mut moves);
+                    let child_idx = self.tree.current.borrow().index;
+                    if self.move_up(&mut moves) {
+                        if self.corrected_depth(depth_correction) % 2 == 0 {
+                            if alpha > self.tree.current.borrow().data.alpha {
+                                self.tree.current.borrow_mut().data.alpha = alpha;
+                                self.tree.current.borrow_mut().data.next_best = child_idx;
+                                self.show_board_from_moves(&moves);
+                            }
+                        } else {
+                            if beta > self.tree.current.borrow().data.beta {
+                                self.tree.current.borrow_mut().data.beta = beta;
+                                self.tree.current.borrow_mut().data.next_best = child_idx;
+                                self.show_board_from_moves(&moves);
+                            }
+                        }
+                    }
+                    // here I think the parent should be updated with beta
                 }
 
                 let next_move = self
@@ -131,6 +148,7 @@ impl Search {
 
                         if self.corrected_depth(depth_correction) % 2 == 0 {
                             if self.tree.has_no_child() {
+                                // here should only be checkmate or stalemate
                                 let alpha = max(eval, self.tree.current.borrow().data.alpha);
                                 self.tree.current.borrow_mut().data.alpha = alpha;
                                     
@@ -147,6 +165,7 @@ impl Search {
                             }
                         } else {
                             if self.tree.has_no_child() {
+                                // here should only be checkmate or stalemate
                                 let beta = min(eval, self.tree.current.borrow().data.beta);
                                 self.tree.current.borrow_mut().data.beta = beta;
                             }
@@ -166,9 +185,9 @@ impl Search {
             } else {
                 number_of_evaluated += 1;
                 let (min_eval, max_eval) = eval_with_children(&self.board, &moves, self.color);
-                let corrected_depth = self.corrected_depth(depth_correction);
                 let child_idx = self.tree.current.borrow().index;
-                if corrected_depth % 2 == 0 {
+
+                if self.corrected_depth(depth_correction) % 2 == 0 {
                     let alpha = max(self.tree.current.borrow().data.alpha, max_eval);
                     self.tree.current.borrow_mut().data.alpha = alpha;
                     if self.move_up(&mut moves) {
@@ -233,14 +252,39 @@ impl Search {
         }
     }
 
-    fn show_board_from_moves(&self, moves: &Vec<ChessMove>) {
+    fn show_board_from_moves(&mut self, moves: &Vec<ChessMove>) {
         if moves.len() < 2{
+            info!("---------------------------------");
             info!("moves: {}", moves_to_string(&moves));
+            info!("next best moves:");
+            let mut i = 0;
+            loop {
+                let next_best = self.tree.current.borrow().data.next_best;
+                match next_best {
+                    Some(best_idx) => {
+                        i += 1;
+                        self.tree.goto_child(best_idx);
+                        let current = &self.tree.current.borrow().data;
+                        info!(
+                            "    move: {}, alpha: {}, beta: {}", 
+                            chess_move_to_string(&current.chess_move.unwrap()), 
+                            current.alpha, 
+                            current.beta
+                        );
+                    },
+                    None => {break;}
+                }
+            }
+            for _ in 0..i {
+                self.tree.goto_parent();
+            }
             info!("depth: {}", moves.len());
             info!("index: {:?}", self.tree.current.borrow().index);
             info!("alpha: {}", self.tree.current.borrow().data.alpha);
             info!("beta: {}", self.tree.current.borrow().data.beta);
             show_board(board_from_moves(self.board, moves));
+            info!("---------------------------------");
+            info!("");
         }
     }
 }
@@ -253,6 +297,17 @@ fn board_from_moves(initial_board: Board, moves: &Vec<ChessMove>) -> Board {
     board
 }
 
+fn get_possible_moves(board: &Board) -> Vec<ChessMove>{
+    let mut seed = board.get_hash();
+    let mut legal_moves: Vec<ChessMove> = MoveGen::new_legal(&board).collect();
+    for i in 0..legal_moves.len() {
+        seed += legal_moves[i].get_source().to_int() as u64 * legal_moves[i].get_dest().to_int() as u64;
+        let move_to = (seed % legal_moves.len() as u64) as usize;
+        legal_moves.swap(i, move_to);
+    }
+    legal_moves
+}
+
 
 pub fn moves_to_string( moves: &Vec<ChessMove>) -> String{
     moves.iter().map(|mv| chess_move_to_string(mv))
@@ -263,13 +318,17 @@ pub fn chess_move_to_string(mv: &ChessMove) -> String {
     format!("{}:{}", mv.get_source().to_string(), mv.get_dest().to_string())
 }
 
-pub fn mv_cmp(mv: &ChessMove, expcted: &str){
+pub fn assert_mv_eq(mv: &ChessMove, expcted: &str){
     assert_eq!(chess_move_to_string(mv), expcted);
+}
+
+pub fn assert_mv_ne(mv: &ChessMove, expcted: &str){
+    assert_ne!(chess_move_to_string(mv), expcted);
 }
 
 #[cfg(test)]
 mod tests {
-    use chess::CastleRights;
+    use chess::{CastleRights, BoardBuilder};
 
     use crate::engine::utils::board_from_textboard;
 
@@ -329,7 +388,7 @@ mod tests {
         let mut search = Search::new(&board, Color::White);
         println!("{:?}", search.run(2, None, None));
         let best = search.run(2, None, None);
-        mv_cmp(&best, "h2:h3")
+        assert_mv_eq(&best, "h2:h3")
     }
 
     #[test]
@@ -354,7 +413,7 @@ mod tests {
         let mut search = Search::new(&board, Color::Black);
         println!("{:?}", search.run(2, None, None));
         let best = search.run(2, None, None);
-        mv_cmp(&best, "h7:h6")
+        assert_mv_eq(&best, "h7:h6")
     }
 
     #[test]
@@ -379,7 +438,7 @@ mod tests {
         let mut search = Search::new(&board, Color::White);
         let best = search.run(2, None, None);
         assert_eq!(best, search.run(3, None, None));
-        mv_cmp(&best, "h1:g1")
+        assert_mv_eq(&best, "h1:g1")
     }
 
     #[test]
@@ -405,6 +464,27 @@ mod tests {
 
         let best = search.run(2, None, None);
         assert_eq!(best, search.run(3, None, None));
-        mv_cmp(&best, "h8:g8")
+        assert_mv_eq(&best, "h8:g8")
+    }
+
+
+    #[test]
+    fn test_real_situation_1() {
+        let textboard = r#"
+        8|   |   |   |   |   |   |   | ♔ |
+        7|   |   | ♙ |   |   | ♙ |   | ♙ |
+        6|   | ♙ |   |   |   |   | ♙ | ♟︎ |
+        5| ♙ |   |   |   |   |   |   |   |
+        4|   |   |   |   |   |   |   |   |
+        3|   |   |   |   |   |   |   |   |
+        2|   |   |   |   | ♟︎ |   |   |   |
+        1|   |   |   |   | ♜ | ♚ |   |   |
+           a   b   c   d   e   f   g   h 
+        "#;
+        let board = Board::from_str("2r2rk1/p1qnbppp/1p1ppn2/6N1/2PQ4/2N3P1/PP2PPKP/R1B2R2 w - - 3 14").unwrap();
+        let mut search = Search::new(&board, Color::White);
+
+        let best = search.run(3, None, None);
+        assert_mv_ne(&best, "g2:h3")
     }
 }

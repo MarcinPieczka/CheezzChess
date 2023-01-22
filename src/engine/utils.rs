@@ -12,7 +12,7 @@ use std::{println as info, println as warn};
 
 pub fn show_board(board: Board) {
     for l in (0..8).rev() {
-        let mut line = "".to_string();
+        let mut line =  (l + 1).to_string();
         for f in 0..8 {
             let square = unsafe { Square::new(f + l * 8) };
             match (board.piece_on(square), board.color_on(square)) {
@@ -22,8 +22,10 @@ pub fn show_board(board: Board) {
                 _ => line += "|   ",
             }
         }
+        line += "|";
         info!("{}", line);
     }
+    info!("   a   b   c   d   e   f   g   h");
 }
 
 
