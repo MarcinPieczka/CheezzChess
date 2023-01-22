@@ -175,8 +175,6 @@ impl Search {
                         if alpha < self.tree.current.borrow().data.beta {
                             self.tree.current.borrow_mut().data.beta = alpha;
                             self.tree.current.borrow_mut().data.next_best = child_idx;
-                            info!("");
-                            info!("on max depth");
                             self.show_board_from_moves(&moves);
                         }
                     } else {
@@ -189,8 +187,6 @@ impl Search {
                         if beta > self.tree.current.borrow().data.alpha {
                             self.tree.current.borrow_mut().data.alpha = beta;
                             self.tree.current.borrow_mut().data.next_best = child_idx;
-                            info!("");
-                            info!("on max depth");
                             self.show_board_from_moves(&moves);
                         }
                     } else {
@@ -238,7 +234,7 @@ impl Search {
     }
 
     fn show_board_from_moves(&self, moves: &Vec<ChessMove>) {
-        if moves.len() < 4{
+        if moves.len() < 2{
             info!("moves: {}", moves_to_string(&moves));
             info!("depth: {}", moves.len());
             info!("index: {:?}", self.tree.current.borrow().index);
@@ -261,11 +257,6 @@ fn board_from_moves(initial_board: Board, moves: &Vec<ChessMove>) -> Board {
 pub fn moves_to_string( moves: &Vec<ChessMove>) -> String{
     moves.iter().map(|mv| chess_move_to_string(mv))
     .fold(String::new(), |acc: String, e: String| acc + &e + ", ")
-
-    // let retult = String::new();
-    // for mv in moves.iter().map(|mv| chess_move_to_string(mv)).reduce(f) {
-
-    // }
 }
 
 pub fn chess_move_to_string(mv: &ChessMove) -> String {
