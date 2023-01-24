@@ -1,5 +1,4 @@
 use fibers::io::stdin;
-use log::info;
 use simplelog::{Config, LevelFilter, WriteLogger};
 use std::fs::File;
 use std::io::{BufRead, BufReader};
@@ -13,6 +12,12 @@ use vampirc_uci::parse_one;
 use engine::Engine;
 
 mod engine;
+
+#[cfg(not(test))] 
+use log::{info, warn};
+ 
+#[cfg(test)]
+use std::{println as info, println as warn};
 
 fn main() {
     let path = Path::new("engine.log");

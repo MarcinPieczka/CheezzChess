@@ -9,10 +9,12 @@ use std::time::Duration;
 use vampirc_uci::Duration as VampDuration;
 use vampirc_uci::{UciMessage, UciTimeControl};
 
-use crate::engine::lookup::Lookup;
+use crate::engine::search::{Search};
+use crate::engine::utils::show_board;
 
 pub mod eval;
-pub mod lookup;
+pub mod search;
+pub mod tree;
 pub mod utils;
 
 pub struct Engine {
@@ -86,7 +88,7 @@ impl Engine {
 
                 self.board = Some(game.current_position());
                 info!("Starting Board:");
-                lookup::show_board(self.board.unwrap());
+                show_board(self.board.unwrap());
             }
             UciMessage::SetOption { .. } => {}
             UciMessage::UciNewGame => {
@@ -114,10 +116,11 @@ impl Engine {
             } => {
                 info!("UciMessage::Go {:?}", time_control);
                 let _move_time = calculate_time(time_control, self.board.unwrap().side_to_move());
-                // sleep(move_time);
-                let mut finder = Lookup::new(&self.board.unwrap());
-                //finder.run(100000);
-                finder.run(100000000);
+
+                let board = &self.board.unwrap();
+                let mut search = Search::new(&self.board.unwrap(), board.side_to_move());
+                let best_move = search.run(5, None, None);
+                bestmove(best_move, None);
             }
             _ => {}
         }
