@@ -18,6 +18,13 @@ work done on previous moves.
 - At any point the best move should be possible to be returned
 - (Maybe later) Engine should by default calculate during oponent time
 
+### MinMax library
+Testing correctness of the algorithm has proven difficult when the search algorithm
+is bound to chess game. To solve this issue, and to have a crate to put on crates.io, separate library
+that handles the move search should be created. It will make ensuring correctness easier,
+as testing can be done with stub games.
+Consider supporting games of more than 2 players, but probably that's not necessary for anyone. 
+(The crate would look nicer though)
 
 ### Evaluator
 Evaluation module should use neural network, but who would want to train it?

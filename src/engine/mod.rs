@@ -35,17 +35,17 @@ impl Default for Engine {
 }
 
 impl Engine {
-    pub fn start(self) -> (JoinHandle<()>, SyncSender<UciMessage>) {
+    pub fn start(self, depth: u8) -> (JoinHandle<()>, SyncSender<UciMessage>) {
         let sender = self.channel_sender.clone();
 
-        (thread::spawn(|| self.run()), sender)
+        (thread::spawn(move || self.run(depth.clone())), sender)
     }
 
-    fn run(mut self) {
+    fn run(mut self, depth: u8) {
         let timeout = Duration::from_millis(2);
         loop {
             if let Ok(message) = self.channel_receiver.recv_timeout(timeout) {
-                if !self.handle_message(message) {
+                if !self.handle_message(message, depth) {
                     info!("Returning from event loop");
                     return;
                 }
@@ -53,7 +53,7 @@ impl Engine {
         }
     }
 
-    fn handle_message(&mut self, message: UciMessage) -> bool {
+    fn handle_message(&mut self, message: UciMessage, depth: u8) -> bool {
         info!("rx: {}", message);
         match message {
             UciMessage::Uci => {
@@ -119,7 +119,7 @@ impl Engine {
 
                 let board = &self.board.unwrap();
                 let mut search = Search::new(&self.board.unwrap(), board.side_to_move());
-                let best_move = search.run(5, None, None);
+                let best_move = search.run(depth, None, None);
                 bestmove(best_move, None);
             }
             _ => {}

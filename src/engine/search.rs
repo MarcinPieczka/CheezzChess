@@ -69,10 +69,10 @@ impl Search {
         }
         let mut depth_correction = 0;
         if self.board.side_to_move() != self.color {
-            info!("using depth correction");
+            //info!("using depth correction");
             depth_correction = 1;
         } else {
-            info!("not using depth correction");
+            //info!("not using depth correction");
         }
         let mut i = 0;
         let mut moves = vec![];
@@ -82,7 +82,10 @@ impl Search {
                 //println!("reached limit");
                 break;
             }
+            //info!("start loop");
+            self.show_board_from_moves(&moves);
             if self.tree.current.borrow().data.depth < max_depth {
+                //info!("depth not max");
                 if self
                     .tree
                     .current
@@ -98,20 +101,22 @@ impl Search {
                 let alpha = self.tree.current.borrow().data.alpha;
                 let beta = self.tree.current.borrow().data.beta;
                 if alpha >= beta{
+                    //info!("pruning");
                     number_of_pruned += 1;
                     let child_idx = self.tree.current.borrow().index;
                     if self.move_up(&mut moves) {
+                        self.show_board_from_moves(&moves);
                         if self.corrected_depth(depth_correction) % 2 == 0 {
                             if alpha > self.tree.current.borrow().data.alpha {
                                 self.tree.current.borrow_mut().data.alpha = alpha;
                                 self.tree.current.borrow_mut().data.next_best = child_idx;
-                                self.show_board_from_moves(&moves);
+                                //self.show_board_from_moves(&moves);
                             }
                         } else {
                             if beta > self.tree.current.borrow().data.beta {
                                 self.tree.current.borrow_mut().data.beta = beta;
                                 self.tree.current.borrow_mut().data.next_best = child_idx;
-                                self.show_board_from_moves(&moves);
+                                //self.show_board_from_moves(&moves);
                             }
                         }
                     }
@@ -130,6 +135,7 @@ impl Search {
 
                 match next_move {
                     Some(mv) => {
+                        //info!("there exists next move");
                         let alpha = self.tree.current.borrow().data.alpha;
                         let beta = self.tree.current.borrow().data.beta;
                         let depth = self.tree.current.borrow().data.depth + 1;
@@ -147,7 +153,9 @@ impl Search {
                         let child_idx = self.tree.current.borrow().index;
 
                         if self.corrected_depth(depth_correction) % 2 == 0 {
+                            //info!("even modulo");
                             if self.tree.has_no_child() {
+                                //info!("has no child!");
                                 // here should only be checkmate or stalemate
                                 let alpha = max(eval, self.tree.current.borrow().data.alpha);
                                 self.tree.current.borrow_mut().data.alpha = alpha;
@@ -155,26 +163,33 @@ impl Search {
                             }
                             let alpha = self.tree.current.borrow().data.alpha;
                             if self.move_up(&mut moves) {
+                                self.show_board_from_moves(&moves);
                                 if alpha < self.tree.current.borrow().data.beta {
+                                    //info!("updating beta");
                                     self.tree.current.borrow_mut().data.beta = alpha;
                                     self.tree.current.borrow_mut().data.next_best = child_idx;
-                                    self.show_board_from_moves(&moves);
+                                    //self.show_board_from_moves(&moves);
                                 }
                             } else {
                                 break;
                             }
                         } else {
+                            //info!("uneven modulo");
                             if self.tree.has_no_child() {
+                                //info!("has no child!");
                                 // here should only be checkmate or stalemate
                                 let beta = min(eval, self.tree.current.borrow().data.beta);
                                 self.tree.current.borrow_mut().data.beta = beta;
                             }
                             let beta = self.tree.current.borrow().data.beta;
                             if self.move_up(&mut moves) {
+                                self.show_board_from_moves(&moves);
+
                                 if beta > self.tree.current.borrow().data.alpha {
+                                    //info!("updating alpha");
                                     self.tree.current.borrow_mut().data.alpha = beta;
                                     self.tree.current.borrow_mut().data.next_best = child_idx;
-                                    self.show_board_from_moves(&moves);
+                                    //self.show_board_from_moves(&moves);
                                 }
                             } else {
                                 break;
@@ -299,6 +314,9 @@ fn board_from_moves(initial_board: Board, moves: &Vec<ChessMove>) -> Board {
 
 fn get_possible_moves(board: &Board) -> Vec<ChessMove>{
     let mut seed = board.get_hash();
+    if seed > 10000 {
+        seed -= 10000;
+    }
     let mut legal_moves: Vec<ChessMove> = MoveGen::new_legal(&board).collect();
     for i in 0..legal_moves.len() {
         seed += legal_moves[i].get_source().to_int() as u64 * legal_moves[i].get_dest().to_int() as u64;
@@ -324,6 +342,10 @@ pub fn assert_mv_eq(mv: &ChessMove, expcted: &str){
 
 pub fn assert_mv_ne(mv: &ChessMove, expcted: &str){
     assert_ne!(chess_move_to_string(mv), expcted);
+}
+
+pub fn assert_mv_src_eq(mv: &ChessMove, expcted: &str){
+    assert_eq!(chess_move_to_string(mv)[..2], expcted[..2]);
 }
 
 #[cfg(test)]
@@ -467,20 +489,131 @@ mod tests {
         assert_mv_eq(&best, "h8:g8")
     }
 
-
     #[test]
-    fn test_real_situation_1() {
+    fn test_avoiding_checkmate_in_two_black_reduced() {
         let textboard = r#"
         8|   |   |   |   |   |   |   | ♔ |
-        7|   |   | ♙ |   |   | ♙ |   | ♙ |
-        6|   | ♙ |   |   |   |   | ♙ | ♟︎ |
-        5| ♙ |   |   |   |   |   |   |   |
+        7|   |   |   |   |   | ♙ |   | ♙ |
+        6|   |   |   |   |   |   | ♙ | ♟︎ |
+        5|   |   |   |   |   |   |   |   |
         4|   |   |   |   |   |   |   |   |
         3|   |   |   |   |   |   |   |   |
         2|   |   |   |   | ♟︎ |   |   |   |
         1|   |   |   |   | ♜ | ♚ |   |   |
            a   b   c   d   e   f   g   h 
         "#;
+        let board = board_from_textboard(
+            textboard,
+            CastleRights::NoRights,
+            CastleRights::NoRights,
+            Color::Black,
+        );
+        let mut search = Search::new(&board, Color::Black);
+
+        let best = search.run(3, None, None);
+        assert_mv_eq(&best, "h8:g8")
+    }
+
+    #[test]
+    fn test_wanting_checkmate_in_two_black_black_starts() {
+        let textboard = r#"
+        8|   |   |   |   | ♖ |   |   | ♔ |
+        7|   |   |   |   | ♙ |   |   |   |
+        6|   | ♙ |   |   |   |   |   |   |
+        5| ♕ |   | ♙ |   |   |   |   |   |
+        4|   | ♟︎ | ♙ |   |   |   |   |   |
+        3| ♙ | ♟︎ | ♟︎ |   |   | ♙ | ♟︎ | ♙ |
+        2| ♟︎ |   |   |   |   | ♟︎ |   | ♟︎ |
+        1|   |   |   |   |   |   |   | ♚ |
+           a   b   c   d   e   f   g   h 
+        "#;
+        let board = board_from_textboard(
+            textboard,
+            CastleRights::NoRights,
+            CastleRights::NoRights,
+            Color::Black,
+        );
+        let mut search = Search::new(&board, Color::White);
+        let best = search.run(2, None, None);
+        assert_mv_eq(&best, "e8:d8")
+    }
+
+    #[test]
+    fn test_wanting_checkmate_in_two_black_white_starts() {
+        let textboard = r#"
+        8|   |   |   |   | ♖ |   |   | ♔ |
+        7|   |   |   |   | ♙ |   |   |   |
+        6|   | ♙ |   |   |   |   |   |   |
+        5| ♕ |   | ♙ |   |   |   |   |   |
+        4|   | ♟︎ | ♙ |   |   | ♞ | ♙ |   |
+        3| ♙ | ♟︎ | ♟︎ |   |   | ♙ | ♟︎ | ♙ |
+        2| ♟︎ |   |   |   |   | ♟︎ |   | ♟︎ |
+        1|   |   |   |   |   |   |   | ♚ |
+           a   b   c   d   e   f   g   h 
+        "#;
+        let board = board_from_textboard(
+            textboard,
+            CastleRights::NoRights,
+            CastleRights::NoRights,
+            Color::White,
+        );
+        let mut search = Search::new(&board, Color::White);
+        let best = search.run(4, None, None);
+        assert_mv_eq(&best, "e8:d8")
+    }
+
+    #[test]
+    fn test_situation_1() {
+        let textboard = r#"
+        8|   |   |   |   |   |   |   | ♔ |
+        7| ♙ |   |   |   |   |   |   | ♙ |
+        6|   |   |   |   |   |   | ♜ |   |
+        5| ♟︎ |   |   |   |   |   |   |   |
+        4|   |   |   |   |   |   |   |   |
+        3|   |   |   |   |   | ♙ |   |   |
+        2|   |   |   |   | ♟︎ |   |   |   |
+        1|   |   |   |   |   | ♚ |   |   |
+           a   b   c   d   e   f   g   h 
+        "#;
+        let board = board_from_textboard(
+            textboard,
+            CastleRights::NoRights,
+            CastleRights::NoRights,
+            Color::White,
+        );
+        let mut search = Search::new(&board, Color::Black);
+
+        let best = search.run(2, None, None);
+        assert_mv_src_eq(&best, "g6:--")
+    }
+
+    #[test]
+    fn test_wants_promotion() {
+        let textboard = r#"
+        8|   |   |   |   |   |   |   | ♔ |
+        7| ♟︎ |   |   |   |   |   |   | ♙ |
+        6|   |   |   |   |   |   | ♜ |   |
+        5|   |   | ♗ |   |   |   |   |   |
+        4|   |   |   |   |   |   |   |   |
+        3|   |   |   |   |   | ♙ |   |   |
+        2|   |   |   |   | ♟︎ |   |   |   |
+        1|   |   |   |   |   | ♚ |   |   |
+           a   b   c   d   e   f   g   h 
+        "#;
+        let board = board_from_textboard(
+            textboard,
+            CastleRights::NoRights,
+            CastleRights::NoRights,
+            Color::White,
+        );
+        let mut search = Search::new(&board, Color::Black);
+
+        let best = search.run(2, None, None);
+        assert_mv_eq(&best, "a7:a8")
+    }
+
+    #[test]
+    fn test_real_situation_1() {
         let board = Board::from_str("2r2rk1/p1qnbppp/1p1ppn2/6N1/2PQ4/2N3P1/PP2PPKP/R1B2R2 w - - 3 14").unwrap();
         let mut search = Search::new(&board, Color::White);
 

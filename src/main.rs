@@ -7,6 +7,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
+use std::env;
 use vampirc_uci::parse_one;
 
 use engine::Engine;
@@ -26,9 +27,20 @@ fn main() {
 
     let mut input = String::new();
     let running = Arc::new(AtomicBool::new(true));
+    let mut depth = 3;
+    let args: Vec<String> = env::args().collect();
+    if args.len() >= 2 {
+        match args[1].parse::<u8>() {
+            Ok(num) => {
+                depth = num;
+            },
+            _ => {panic!("first argument if provided should be depth")}
+        }
+    }
+
     let (handle, tx) = {
         let engine = Engine::default();
-        engine.start()
+        engine.start(depth)
     };
     let mut stdin = BufReader::new(stdin());
 
